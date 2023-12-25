@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Project;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,11 +17,10 @@ class DonationFactory extends Factory
      */
     public function definition(): array
     {
-        $projectId = [1,2,3,4,5];
         return [
             'email' => fake()->safeEmail(),
             'amount' => $this->faker->randomNumber,
-            'project_id' => $this->faker->randomElement($projectId),
+            'project_id' => Project::factory(),
             'description'=> $this->faker->sentence,
         ];
     }

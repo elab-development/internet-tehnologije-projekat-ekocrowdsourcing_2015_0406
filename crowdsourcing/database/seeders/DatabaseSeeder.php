@@ -7,7 +7,9 @@ namespace Database\Seeders;
 use App\Models\Donation;
 use App\Models\Project;
 use App\Models\User;
+use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Schema;
 
 class DatabaseSeeder extends Seeder
 {
@@ -17,19 +19,16 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
 
+        User::truncate();
+        Donation::truncate();
+        Project::truncate();
+
         $this->call([
             UserSeeder::class
         ]);
 
-        User::factory(3)->create();
-        // \App\Models\User::factory(10)->create();
+        Donation::factory(10)->create();
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
-        Project::factory(5)->create();
-        Donation::factory(20)->create();
 
     }
 }
