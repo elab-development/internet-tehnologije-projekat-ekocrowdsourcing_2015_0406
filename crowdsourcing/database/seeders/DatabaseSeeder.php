@@ -24,7 +24,8 @@ class DatabaseSeeder extends Seeder
         Project::truncate();
 
         $this->call([
-            UserSeeder::class
+            UserSeeder::class,
+            ProjectSeeder::class
         ]);
 
         Donation::factory(10)->create();
