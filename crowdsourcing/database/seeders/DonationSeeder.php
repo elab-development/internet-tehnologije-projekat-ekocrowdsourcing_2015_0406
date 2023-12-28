@@ -16,6 +16,7 @@ class DonationSeeder extends Seeder
         Donation::create([
             'email'=>'jedan@jedan.com',
             'amount'=>111,
+            'description'=>'opis1',
             'project_id'=>1,
 
         ]);

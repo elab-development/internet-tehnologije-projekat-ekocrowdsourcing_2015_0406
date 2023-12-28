@@ -19,8 +19,9 @@ class DonationResource extends JsonResource
         return [
             'email'=> $this->resource->email,
             'amount'=> $this->resource->amount,
-            'project'=> new ProjectResource($this->resource->project),
             'donation message'=> $this->resource->description,
+            'project'=> new ProjectResource($this->resource->project),
+
         ];}
         else{
             return[
