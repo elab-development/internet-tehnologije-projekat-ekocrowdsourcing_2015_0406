@@ -15,12 +15,23 @@ class ProjectResource extends JsonResource
     public static $wrap = 'Project';
     public function toArray(Request $request): array
     {
-        return [
-            'name' => $this->resource->name,
-            'type' => $this->resource->type,
-            'location' => $this->resource->location,
-            'project description' => $this->resource->description,
-            'user' => new UserResource($this->resource->user),
-        ];
-    }
+        if($this->resource->description != null){
+            return [
+                'name' => $this->resource->name,
+                'type' => $this->resource->type,
+                'location' => $this->resource->location,
+                'project description' => $this->resource->description,
+                'user' => new UserResource($this->resource->user),
+            ];}
+            else{
+                return [
+                    'name' => $this->resource->name,
+                    'type' => $this->resource->type,
+                    'location' => $this->resource->location,
+                    'user' => new UserResource($this->resource->user),
+                ];
+                
+            }
+        }
+
 }

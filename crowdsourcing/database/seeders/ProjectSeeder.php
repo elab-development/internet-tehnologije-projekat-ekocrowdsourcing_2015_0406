@@ -24,14 +24,12 @@ class ProjectSeeder extends Seeder
             'name'=>"projekat 2",
             'type'=>"Vazduh",
             'location'=>"srbija",
-            'description'=>"opis1",
             'user_id'=>1,
         ]);
         Project::create([
             'name'=>"projekat 3",
             'type'=>"Posumljavanje",
             'location'=>"srbija",
-            'description'=>"opis1",
             'user_id'=>1,
         ]);
     }

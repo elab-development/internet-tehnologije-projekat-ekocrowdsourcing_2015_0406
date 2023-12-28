@@ -12,13 +12,23 @@ class DonationResource extends JsonResource
      *
      * @return array<string, mixed>
      */
+    public static $wrap = 'Donation';
     public function toArray(Request $request): array
     {
+        if($this->resource->description != null){
         return [
             'email'=> $this->resource->email,
             'amount'=> $this->resource->amount,
             'project'=> new ProjectResource($this->resource->project),
             'donation message'=> $this->resource->description,
-        ];
+        ];}
+        else{
+            return[
+                'email'=> $this->resource->email,
+                'amount'=> $this->resource->amount,
+                'project'=> new ProjectResource($this->resource->project)
+            ];
+            
+        }
     }
 }
