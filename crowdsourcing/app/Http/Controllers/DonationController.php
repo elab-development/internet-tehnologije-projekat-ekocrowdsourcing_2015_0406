@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\DonationCollection;
 use App\Http\Resources\DonationResource;
 use App\Models\Donation;
 use Illuminate\Http\Request;
@@ -15,7 +16,7 @@ class DonationController extends Controller
     {
         $donation = Donation::all();
 
-        return $donation;
+        return new DonationCollection($donation);
     }
 
     /**

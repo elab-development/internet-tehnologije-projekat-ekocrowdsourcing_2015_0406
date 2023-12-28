@@ -12,8 +12,8 @@ class UserProjectController extends Controller
     public function index($user_id){
         
         $projects = Project::where('user_id',$user_id)->get();
-        if(is_null($projects)){
-            return response()->json('nema', 404);
+        if($projects->isEmpty()){
+            return response()->json('No projects', 404);
         }
         return new ProjectCollection($projects);
     }

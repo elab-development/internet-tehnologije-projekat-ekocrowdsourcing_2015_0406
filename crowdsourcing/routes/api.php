@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\DonationController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\ProjectDonationController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserProjectController;
 use App\Models\User;
@@ -17,6 +18,7 @@ Route::resource('projects', ProjectController::class);
 Route::resource('users.projects', UserProjectController::class)->only(['index']);
 Route::resource('users', UserController::class);
 Route::resource('donations', DonationController::class);
+Route::resource('projects.donations', ProjectDonationController::class);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
