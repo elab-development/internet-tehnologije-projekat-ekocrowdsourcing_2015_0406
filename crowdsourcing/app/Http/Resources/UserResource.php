@@ -12,11 +12,13 @@ class UserResource extends JsonResource
      *
      * @return array<string, mixed>
      */
+    public static $wrap = 'User';
     public function toArray(Request $request): array
     {
         return [
             'name'=>$this->resource->name,
-            'email'=>$this->resource->email
+            'email'=>$this->resource->email,
+            'type'=>$this->resource->type,
         ];
     }
 }
