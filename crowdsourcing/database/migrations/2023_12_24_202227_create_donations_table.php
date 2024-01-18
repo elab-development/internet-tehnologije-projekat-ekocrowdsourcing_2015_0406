@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('email');
             $table->string('amount');
             $table->foreignId('project_id');
-            $table->string('description')->nullable();
             $table->timestamps();
         });
     }
