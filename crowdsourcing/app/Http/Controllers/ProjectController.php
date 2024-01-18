@@ -32,7 +32,16 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'type' => 'required|in:Deponija,Vazduh,Posumljavanje,Korita',
+            'location' => 'required|min:4',
+            'user_id' => 'required|exists:users,id' 
+        ]);
+
+        $project = Project::create($validatedData);
+
+        return new ProjectResource($project);
     }
 
     /**
@@ -62,8 +71,15 @@ class ProjectController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Project $project)
+    public function destroy($id)
     {
-        //
+        $project = Project::find($id);
+        if (!$project) {
+            return response()->json(['message' => 'Project not found'], 404);
+        }
+        $project->delete();
+
+        return response()->json(['message' => 'Project deleted successfully']);
     }
+
 }

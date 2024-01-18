@@ -15,11 +15,14 @@ Route::get('/projects/{id}', [ProjectController::class,'show']); */
 /* Route::get('/users/{user_id}/projects', [UserProjectController::class,'index']); */
 
 Route::resource('projects', ProjectController::class);
-Route::resource('users.projects', UserProjectController::class)->only(['index']);
 Route::resource('users', UserController::class);
+Route::resource('users.projects', UserProjectController::class);
 Route::resource('donations', DonationController::class);
 Route::resource('projects.donations', ProjectDonationController::class);
+Route::delete('/delete-project/{id}', [ProjectController::class,'destroy']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
+
+
 });
