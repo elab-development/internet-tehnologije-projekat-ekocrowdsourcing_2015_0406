@@ -32,7 +32,20 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users|max:255',
+            'password' => 'required|min:8',
+            'type' => 'sometimes|string|max:255'
+        ]);
+
+        // Create a new user with the validated data
+        $user = User::create($validatedData);
+
+        // Optionally, you can redirect the user to the user's profile or another page
+/*         return redirect()->route('users.show', $user->id)
+            ->with('success', 'User created successfully!'); */
+        return new UserResource($user);
     }
 
     /**
@@ -64,6 +77,11 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+        $user->delete();
+
+        return response()->json(['message' => 'User deleted successfully']);
     }
 }
