@@ -20,6 +20,8 @@ Route::resource('users.projects', UserProjectController::class);
 Route::resource('donations', DonationController::class);
 Route::resource('projects.donations', ProjectDonationController::class);
 Route::delete('/delete-project/{id}', [ProjectController::class,'destroy']);
+Route::patch('/update-user/{id}', [UserController::class, 'update']);
+Route::post('/create-donation', [DonationController::class, 'store']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
