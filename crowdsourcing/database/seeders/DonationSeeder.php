@@ -21,13 +21,13 @@ class DonationSeeder extends Seeder
 
         ]);
         Donation::create([
-            'email'=>'dva@dva.com',
+            'email'=>'jedan@jedan.com',
             'amount'=>222,
             'project_id'=>1,
 
         ]);
         Donation::create([
-            'email'=>'tri@tri.com',
+            'email'=>'jedan@jedan.com',
             'amount'=>333,
             'project_id'=>1,
 

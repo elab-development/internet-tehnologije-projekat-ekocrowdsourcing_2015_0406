@@ -32,7 +32,16 @@ class DonationController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'email' => 'required|string|max:255',
+            'amount' => 'required|numeric',
+            'description' => 'nullable|string',
+            'project_id' => 'required'
+        ]);
+
+        $donation = Donation::create($validatedData);
+
+        return new DonationResource($donation);
     }
 
     /**
@@ -56,7 +65,16 @@ class DonationController extends Controller
      */
     public function update(Request $request, Donation $donation)
     {
-        //
+        $validatedData = $request->validate([
+            'email' => 'required|string|max:255',
+            'amount' => 'required|numeric',
+            'description' => 'nullable|string',
+            'project_id' => 'required'
+        ]);
+
+        $donation = Donation::create($validatedData);
+
+        return new DonationResource($donation);
     }
 
     /**
@@ -64,6 +82,11 @@ class DonationController extends Controller
      */
     public function destroy(Donation $donation)
     {
-        //
+        if (!$donation) {
+            return response()->json(['message' => 'Donation not found'], 404);
+        }
+        $donation->delete();
+
+        return response()->json(['message' => 'Donation deleted successfully']);
     }
 }
