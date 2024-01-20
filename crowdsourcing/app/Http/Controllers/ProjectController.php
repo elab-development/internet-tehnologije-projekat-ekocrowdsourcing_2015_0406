@@ -65,7 +65,16 @@ class ProjectController extends Controller
      */
     public function update(Request $request, Project $project)
     {
-        //
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'type' => 'required|in:Deponija,Vazduh,Posumljavanje,Korita',
+            'location' => 'required|min:4',
+            'user_id' => 'required|exists:users,id' 
+        ]);
+
+        $project = Project::create($validatedData);
+
+        return new ProjectResource($project);
     }
 
     /**
