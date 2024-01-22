@@ -39,12 +39,8 @@ class UserController extends Controller
             'type' => 'sometimes|string|max:255'
         ]);
 
-        // Create a new user with the validated data
         $user = User::create($validatedData);
 
-        // Optionally, you can redirect the user to the user's profile or another page
-/*         return redirect()->route('users.show', $user->id)
-            ->with('success', 'User created successfully!'); */
         return new UserResource($user);
     }
 
