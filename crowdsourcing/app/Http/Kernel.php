@@ -70,5 +70,7 @@ class Kernel extends HttpKernel
         // other middlewares...
     
         'admin' => \App\Http\Middleware\AdminCheck::class,
+        'mod' => \App\Http\Middleware\ModCheck::class,
+        'admin-or-mod' => \App\Http\Middleware\AdminOrModCheck::class,
     ];
 }
