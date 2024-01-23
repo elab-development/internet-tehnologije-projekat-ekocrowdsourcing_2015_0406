@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Resources\UserCollection;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -41,7 +43,11 @@ class UserController extends Controller
 
         $user = User::create($validatedData);
 
-        return new UserResource($user);
+        return response()->json(['User created successfully', new UserResource($user)]);
+    }
+    protected function failedValidation(Validator $validator)
+    {//editujem error response koji baca $request->validate() ako fejluje, valjda
+        throw new HttpResponseException(response()->json(['Validation error' => $validator->errors()], 422));  
     }
 
     /**
