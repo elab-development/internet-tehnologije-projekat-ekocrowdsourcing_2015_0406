@@ -10,34 +10,41 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-/* Route::get('/projects', [ProjectController::class,'index']);
-Route::get('/projects/{id}', [ProjectController::class,'show']); */
+//svi mogu
+Route::resource('donations', DonationController::class)->only(['show','index']); //radi
+Route::resource('projects.donations', ProjectDonationController::class)->only(['show','index']); //radi
+Route::resource('projects', ProjectController::class)->only(['show','index']); //radi
 
-/* Route::get('/users/{user_id}/projects', [UserProjectController::class,'index']); */
+Route::post('/register', [AuthController::class, 'register']); //radi
+Route::post('/login', [AuthController::class, 'login']); //radi
 
-Route::resource('projects', ProjectController::class);
-Route::resource('donations', DonationController::class);
-Route::resource('projects.donations', ProjectDonationController::class);
-
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
 
  Route::group(['middleware' => ['auth:sanctum']], function () {
         // samo ulogovani korisnici mogu da pristupe ovim rutama
-        Route::patch('/update-user/{id}', [UserController::class, 'update']);
-        Route::post('/create-donation', [DonationController::class, 'store']);
-        Route::resource('users.projects', UserProjectController::class);
-});
 
+        Route::post('/create-donation', [DonationController::class, 'store']); //radi za sva 3 ulogovana
+        Route::resource('users.projects', UserProjectController::class)->only(['show','index']); //radi za sva 3 ulogovana
+        Route::resource('projects', ProjectController::class)->only(['store']);  //radi za sva 3, samo store, update nije proveren
+});
 Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {       
-    // samo admini mogu da pristupe ovim rutama   
-        Route::delete('/delete-project/{id}', [ProjectController::class,'destroy']);
-        Route::resource('users', UserController::class);
-        Route::get('/admin-dashboard', function () {
+    // samo admini mogu da pristupe ovim rutama
+        Route::patch('/update-user/{id}', [UserController::class, 'update']); //radi samo admin
+        Route::resource('users', UserController::class); //radi za admin i mod, treba proveriti kako destroy user a da ne ide preko user
+        Route::resource('donations', DonationController::class)->except(['show','index']); //overlap problem?
+        Route::get('/admin-dashboard', function () { //radi samo za admin
         return 'Welcome to the admin dashboard!';
     });
+});
+Route::group(['middleware' => ['auth:sanctum', 'mod']], function () {       
+        //samo mod mogu da pristupe ovim rutama   
+        Route::get('/mod-dashboard', function () { //radi samo za mod
+            return 'Welcome to the moderator dashboard!';
+        });
+});
+Route::group(['middleware' => ['auth:sanctum','admin-or-mod']], function () {       
+    // admin i mod mogu da pristupe ovim rutama
+    Route::resource('users', UserController::class)->only(['show','index']); //radi za admin ili mod
+    Route::resource('projects', ProjectController::class)->except(['show','index','store']); //except zbog errora, overlap pretpostavljam?  
+    //radi za admin i mod
+    Route::delete('/delete-project/{id}', [ProjectController::class,'destroy']); //radi za admin i mod
 });
