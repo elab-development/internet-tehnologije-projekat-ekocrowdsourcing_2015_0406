@@ -19,6 +19,6 @@ class AdminCheck
             return $next($request);
         }
 
-        return response()->json(['message' => 'Forbidden'], 403);
+        return response()->json(['message' => 'Forbidden admin check'], 403);
     }
 }
