@@ -37,10 +37,11 @@ Route::group(['middleware' => ['auth:sanctum','admin-or-mod']], function () {
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     // samo ulogovani korisnici mogu da pristupe ovim rutama
-
+    Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/create-donation', [DonationController::class, 'store']); //radi za sva 3 ulogovana
     Route::resource('users.projects', UserProjectController::class)->only(['show','index']); //radi za sva 3 ulogovana
     Route::resource('projects', ProjectController::class)->only(['store']);  //radi za sva 3, samo store, update nije proveren
+
 });
 
 //svi mogu

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use Laravel\Sanctum\HasApiTokens;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -53,5 +54,13 @@ class AuthController extends Controller
         'access_token' => $token,
         'token_type' => 'Bearer',
     ]);
+}
+
+public function logout(Request $request)
+{
+    // Revoke the user's current token...
+    $request->user()->currentAccessToken()->delete();
+
+    return response()->json(['message' => 'User logged out successfully']);
 }
 }
