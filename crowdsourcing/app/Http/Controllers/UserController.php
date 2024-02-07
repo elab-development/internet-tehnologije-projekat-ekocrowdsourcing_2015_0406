@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Http\Resources\UserCollection;
 use App\Http\Resources\UserResource;
-use App\Models\User;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -40,6 +41,11 @@ class UserController extends Controller
             'password' => 'required|min:8',
             'type' => 'sometimes|string|max:255'
         ]);
+        
+
+        if (Auth::check() && Auth::user()->isAdmin()) {     //zasto ovo ne radi? zasto je isAdmin() undefined kada je definisan u User modelu?
+            $validatedData['type'] = 'user';
+        }
 
         $user = User::create($validatedData);
 

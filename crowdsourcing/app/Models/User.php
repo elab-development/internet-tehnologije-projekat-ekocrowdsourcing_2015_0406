@@ -48,6 +48,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(Project::class); 
     }
+    
+    public function isAdmin()
+    {
+        return $this->type === 'admin';
+    }
 /*     public function donations()
     {
         return $this->hasMany(Donation::class); 

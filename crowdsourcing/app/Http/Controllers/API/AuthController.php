@@ -27,8 +27,8 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password)
-            //'type' => $request->type,
+            'password' => Hash::make($request->password),
+            'type' => $request->type
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;
@@ -63,4 +63,6 @@ public function logout(Request $request)
 
     return response()->json(['message' => 'User logged out successfully']);
 }
+
+
 }
