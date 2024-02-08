@@ -38,11 +38,17 @@ class AuthController extends Controller
 
     public function login(Request $request)
 {
-    if (!Auth::attempt($request->only('email', 'password'))) {
-        return response()->json(['message' => 'Unauthorized'], 401);
+    if ($request->bearerToken()) {
+        return response()->json(['message' => 'Already logged in'], 200);
     }
 
+    if (!Auth::attempt($request->only('email', 'password'))) {
+        return response()->json(['message' => 'Wrong credentials'], 401);
+    }
+
+
     $user = User::where('email', $request['email'])->firstOrFail();
+
 
     // Authenticate the user in the session
     Auth::login($user);
