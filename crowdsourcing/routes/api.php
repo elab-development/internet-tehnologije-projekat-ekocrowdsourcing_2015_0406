@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {       
     // samo admini mogu da pristupe ovim rutama
-        Route::patch('/update-user/{id}', [UserController::class, 'update']); //radi samo admin
+       
         Route::resource('users', UserController::class); //radi za admin i mod, treba proveriti kako destroy user a da ne ide preko user id
         Route::resource('donations', DonationController::class); //overlap problem?
         Route::get('/admin-dashboard', function () { //radi samo za admin
@@ -46,9 +46,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
 //svi mogu
 Route::resource('donations', DonationController::class)->only(['show','index']); //radi
-Route::resource('projects.donations', ProjectDonationController::class)->only(['show','index']); //radi
+Route::resource('projects.donations', ProjectDonationController::class)->only([/* 'show', */'index']); //radi
 Route::resource('projects', ProjectController::class)->only(['show','index']); //radi
-
+Route::resource('users', UserController::class)->only(['store']);
+Route::patch('/update-user/{id}', [UserController::class, 'update']); //radi samo admin
 Route::post('/register', [AuthController::class, 'register']); //radi
 Route::post('/login', [AuthController::class, 'login']); //radi
 

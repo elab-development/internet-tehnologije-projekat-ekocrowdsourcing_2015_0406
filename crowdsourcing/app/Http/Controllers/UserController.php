@@ -77,15 +77,22 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $authUser = Auth::user();
+
+        if ($authUser->id != $id) { //ne radi ni ovo, postman izbacuje ErrorException: Attempt to read property &quot;id&quot; on null in file na ovoj liniji
+            return response()->json(['message' => 'Unauthorized. You can only update your own profile.'], 403);
+        }
+
         $user = User::find($id);
+
         if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
         }
         
         $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'password' => 'required|min:8',
+            'name' => 'sometimes|string|max:255',
+            'email' => 'sometimes|email|max:255',
+            'password' => 'sometimes|min:8',
             'type' => 'sometimes|string|max:255'
         ]);
 
