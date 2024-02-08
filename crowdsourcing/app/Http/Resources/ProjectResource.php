@@ -21,14 +21,14 @@ class ProjectResource extends JsonResource
                 'type' => $this->resource->type,
                 'location' => $this->resource->location,
                 'project description' => $this->resource->description,
-                'user' => new UserResource($this->resource->user),
+                'user' => $this->resource->user->name,
             ];}
             else{
                 return [
                     'name' => $this->resource->name,
                     'type' => $this->resource->type,
                     'location' => $this->resource->location,
-                    'user' => new UserResource($this->resource->user),
+                    'user' => $this->resource->user->name,
                 ];
                 
             }
