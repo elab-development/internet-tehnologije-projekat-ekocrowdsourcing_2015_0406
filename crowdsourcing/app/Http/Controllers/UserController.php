@@ -35,6 +35,8 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        $user1 = Auth::user();
+
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users|max:255',
@@ -43,7 +45,7 @@ class UserController extends Controller
         ]);
         
 
-        if (Auth::check() && Auth::user()->isAdmin()) {     //zasto ovo ne radi? zasto je isAdmin() undefined kada je definisan u User modelu?
+        if ($user1->type !== 'admin') {     //zasto ovo ne radi? zasto je isAdmin() undefined kada je definisan u User modelu?
             $validatedData['type'] = 'user';
         }
 
@@ -62,6 +64,17 @@ class UserController extends Controller
     public function show(User $user)
     {
         return new UserResource($user);
+    }
+
+    public function showCurrent()
+    {
+        $user = Auth::user();
+
+        if ($user) {
+            return new UserResource($user);
+        } else {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
     }
 
     /**
