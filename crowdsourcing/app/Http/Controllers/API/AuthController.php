@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
 
+
 class AuthController extends Controller
 {
     public function register(Request $request){
@@ -18,12 +19,20 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users|max:255',
             'password' => 'required|min:8',
-            //'type' => 'sometimes|string|max:255'
+            'type' => 'sometimes|string|max:255'
         ]);
+
+        if (!Auth::check() || (Auth::check() && Auth::user()->type !== 'admin')) {  
+            $validatedData['type'] = 'user';
+        }
 
         if($validator->fails()){
             return response()->json($validator->errors());
         }
+        $user = Auth::user();
+        return response()->json(['data'=>$user]);
+
+/* 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -31,9 +40,9 @@ class AuthController extends Controller
             'type' => $request->type
         ]);
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        //$token = $user->createToken('auth_token')->plainTextToken;
         
-        return response()->json(['data'=>$user,'access_token'=>$token,'token_type'=>'Bearer']);
+        return response()->json(['data'=>$user]); */
     }
 
     public function login(Request $request)
