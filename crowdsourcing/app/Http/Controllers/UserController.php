@@ -35,10 +35,6 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        if(!Auth::user()){
-            return response()->json(['User is null?']); //zasto je Auth::user() ovde null, a dole u showCurrent radi?
-        }
-
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users|max:255',
@@ -47,14 +43,15 @@ class UserController extends Controller
         ]);
         
 
-        /* if ($user1->type !== 'admin') {     //zasto ovo ne radi? zasto je isAdmin() undefined kada je definisan u User modelu?
+         if (Auth::user()->type !== 'admin') {     //zasto ovo ne radi? zasto je isAdmin() undefined kada je definisan u User modelu?
             $validatedData['type'] = 'user';
-        } */
+        }
 
         $user = User::create($validatedData);
 
         return response()->json(['User created successfully', new UserResource($user)]);
     }
+
     protected function failedValidation(Validator $validator)
     {//editujem error response koji baca $request->validate() ako fejluje, valjda
         throw new HttpResponseException(response()->json(['Validation error' => $validator->errors()], 422));  
