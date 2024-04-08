@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
+use App\Http\Resources\UserCollection;
+use App\Http\Resources\UserResource;
 
 
 class AuthController extends Controller
@@ -35,7 +37,7 @@ class AuthController extends Controller
 
         $token = $user->createToken('auth_token')->plainTextToken;
         
-        return response()->json(['data'=>$user]); 
+        return response()->json(['User created successfully', new UserResource($user)]); 
     }
 
     public function login(Request $request){

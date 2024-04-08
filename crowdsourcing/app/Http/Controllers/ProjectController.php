@@ -6,6 +6,7 @@ use App\Http\Resources\ProjectCollection;
 use App\Http\Resources\ProjectResource;
 use App\Models\Project;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectController extends Controller
 {
@@ -32,12 +33,15 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
+        $user_id = Auth::id();
+
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'type' => 'required|in:Deponija,Vazduh,Posumljavanje,Korita',
             'location' => 'required|min:4',
-            'user_id' => 'required|exists:users,id' 
         ]);
+
+        $validatedData['user_id'] = $user_id;
 
         $project = Project::create($validatedData);
 

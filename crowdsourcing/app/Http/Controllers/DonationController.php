@@ -63,8 +63,13 @@ class DonationController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Donation $donation)
+    public function update(Request $request, $id)
     {
+        $donation = Donation::find($id);
+        if (!$donation) {
+            return response()->json(['message' => 'Donation not found'], 404);
+        } 
+
         $validatedData = $request->validate([
             'email' => 'required|string|max:255',
             'amount' => 'required|numeric',
@@ -72,16 +77,17 @@ class DonationController extends Controller
             'project_id' => 'required'
         ]);
 
-        $donation = Donation::create($validatedData);
+        $donation->update($validatedData);
 
-        return new DonationResource($donation);
+        return response()->json(['message' => 'Donation updated successfully', 'User:' => new DonationResource($donation)]);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Donation $donation)
+    public function destroy($id)
     {
+        $donation = Donation::find($id);
         if (!$donation) {
             return response()->json(['message' => 'Donation not found'], 404);
         }
