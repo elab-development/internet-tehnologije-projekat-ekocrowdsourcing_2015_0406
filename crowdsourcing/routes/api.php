@@ -14,7 +14,7 @@ Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
     // samo admini mogu da pristupe ovim rutama
        
         Route::resource('users', UserController::class); //radi za admin i mod, treba proveriti kako destroy user a da ne ide preko user id
-        Route::resource('donations', DonationController::class); //overlap problem?
+        Route::resource('donations', DonationController::class);
         Route::get('/admin-dashboard', function () { //radi samo za admin
         return 'Welcome to the admin dashboard!';
     });
@@ -50,9 +50,10 @@ Route::resource('donations', DonationController::class)->only(['show','index']);
 Route::resource('projects.donations', ProjectDonationController::class)->only([/* 'show', */'index']); //radi
 Route::resource('projects', ProjectController::class)->only(['show','index']); //radi
 Route::resource('users', UserController::class)->only(['store']);
-Route::patch('/update-user/{id}', [UserController::class, 'update']); //radi samo admin
 Route::post('/register', [AuthController::class, 'register']); //radi
 Route::post('/login', [AuthController::class, 'login']); //radi
+
+Route::patch('/update-user/{id}', [UserController::class, 'update']); //radi samo admin
 
 
 
