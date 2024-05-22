@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {       
     // samo admini mogu da pristupe ovim rutama
-       
+        Route::patch('/update-user/{id}', [UserController::class, 'update']);
         Route::resource('users', UserController::class); //radi za admin i mod, treba proveriti kako destroy user a da ne ide preko user id
         Route::resource('donations', DonationController::class);
         Route::get('/admin-dashboard', function () { //radi samo za admin
@@ -37,6 +37,7 @@ Route::group(['middleware' => ['auth:sanctum','admin-or-mod']], function () {
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     // samo ulogovani korisnici mogu da pristupe ovim rutama
+    Route::patch('/update-user', [UserController::class, 'updateMe']);
     Route::get('/profile', [UserController::class, 'showCurrent']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/create-donation', [DonationController::class, 'store']); //radi za sva 3 ulogovana
@@ -53,7 +54,7 @@ Route::resource('users', UserController::class)->only(['store']);
 Route::post('/register', [AuthController::class, 'register']); //radi
 Route::post('/login', [AuthController::class, 'login']); //radi
 
-Route::patch('/update-user/{id}', [UserController::class, 'update']); //radi samo admin
+ //radi samo admin
 
 
 

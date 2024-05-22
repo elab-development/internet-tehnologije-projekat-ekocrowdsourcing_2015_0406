@@ -87,12 +87,28 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
+
+     public function updateMe(Request $request) //updateMe ne prima ID kao ulazni, preko request-a ustanovi koji je korisnik i menja njegove podatke na tom id-u
+     {
+        $user = Auth::user();
+        $updateUser = User::find($user->id);
+ 
+        $validatedData = $request->validate([
+             'name' => 'sometimes|string|max:255',
+             'email' => 'sometimes|email|max:255',
+             'password' => 'sometimes|min:8'
+         ]);
+ 
+         $updateUser->update($validatedData);
+         return response()->json(['message' => 'User updated successfully', 'User:' => new UserResource($updateUser)]); 
+     }
+
     public function update(Request $request, $id)
     {
         $authUser = Auth::user();
 
-        if ($authUser->id != $id) { //ne radi ni ovo, postman izbacuje ErrorException: Attempt to read property &quot;id&quot; on null in file na ovoj liniji
-            return response()->json(['message' => 'Unauthorized. You can only update your own profile.'], 403);
+         if ($authUser->type!=='admin') {
+            return response()->json(['message' => 'Unauthorized.'], 403);
         }
 
         $user = User::find($id);
@@ -110,8 +126,9 @@ class UserController extends Controller
 
         $user->update($validatedData);
         
-        return response()->json(['message' => 'User updated successfully', 'User:' => new UserResource($user)]);
-    }
+        return response()->json(['message' => 'User updated successfully', 'User:' => new UserResource($user)]); 
+    }     
+
 
     /**
      * Remove the specified resource from storage.
