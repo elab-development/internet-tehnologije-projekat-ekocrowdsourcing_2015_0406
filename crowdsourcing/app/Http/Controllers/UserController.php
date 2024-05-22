@@ -39,13 +39,9 @@ class UserController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users|max:255',
             'password' => 'required|min:8',
-            'type' => 'sometimes|string|max:255'
         ]);
-        
 
-         if (Auth::user()->type !== 'admin') {     //zasto ovo ne radi? zasto je isAdmin() undefined kada je definisan u User modelu?
-            $validatedData['type'] = 'user';
-        }
+        $validatedData['type'] = 'user';
 
         $user = User::create($validatedData);
 
