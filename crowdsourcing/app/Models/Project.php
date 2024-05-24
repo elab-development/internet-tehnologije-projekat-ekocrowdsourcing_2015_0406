@@ -7,17 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Project extends Model
 {
-
-    public function scopeType($query, $type)
-    {
-        return $query->where('type', $type);
-    }
-
-    public function scopeLocation($query, $location)
-    {
-        return $query->where('location', $location);
-    }
-
 /*     public function scopeCreator($query, $creator)
     {
         return $query->where('creator', $creator);
@@ -26,7 +15,7 @@ class Project extends Model
     use HasFactory;
     protected $fillable = [
         'name',
-        'type',
+        'type_id',
         'location',
         'description',
         'user_id'
@@ -38,9 +27,22 @@ class Project extends Model
     protected $casts = [
     ]; */
 
+    public function scopeType($query, $type)
+    {
+        return $query->where('type_id', $type);
+    }
+
+    public function scopeLocation($query, $location)
+    {
+        return $query->where('location', $location);
+    }
 
     public function user(){
         return $this->belongsTo(User::class);
+    }
+
+    public function type(){
+        return $this->belongsTo(Type::class);
     }
 
     public function donations()

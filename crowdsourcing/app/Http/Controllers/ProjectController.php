@@ -17,8 +17,8 @@ class ProjectController extends Controller
     {
          $query = Project::query();
 
-         if ($request->has('type')) {
-             $query->type($request->input('type'));
+         if ($request->has('type_id')) {
+             $query->type($request->input('type_id'));
          }
  
          if ($request->has('location')) {
@@ -52,7 +52,7 @@ class ProjectController extends Controller
 
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'type' => 'required|in:Deponija,Vazduh,Posumljavanje,Korita',
+            'type_id' => 'required|exists:types,id',
             'location' => 'required|min:4',
         ]);
 
@@ -90,7 +90,7 @@ class ProjectController extends Controller
         } 
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'type' => 'required|in:Deponija,Vazduh,Posumljavanje,Korita',
+            'type_id' => 'required|exists:types,id',
             'description'=>'nullable',
             'location' => 'required|min:4',
             'user_id' => 'required|exists:users,id' 
