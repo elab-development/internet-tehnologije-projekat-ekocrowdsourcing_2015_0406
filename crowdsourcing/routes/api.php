@@ -6,6 +6,7 @@ use App\Http\Controllers\ProjectDonationController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserProjectController;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\TypeController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -15,6 +16,8 @@ Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
         Route::patch('/update-user/{id}', [UserController::class, 'update']);
         Route::resource('users', UserController::class); //radi za admin i mod, treba proveriti kako destroy user a da ne ide preko user id
         Route::resource('donations', DonationController::class);
+        Route::post('types', [TypeController::class, 'store']);
+        Route::delete('types/{type}', [TypeController::class, 'destroy']);
         Route::get('/admin-dashboard', function () { //radi samo za admin
         return 'Welcome to the admin dashboard!';
     });
