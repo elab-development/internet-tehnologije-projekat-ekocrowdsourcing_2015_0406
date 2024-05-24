@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
             DonationSeeder::class
         ]);
 
-        Donation::factory(10)->create();
+        Donation::factory(30)->create();
 
 
     }
