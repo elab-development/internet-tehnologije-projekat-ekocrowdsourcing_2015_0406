@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\User;
+use App\Models\Type;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,10 +18,9 @@ class ProjectFactory extends Factory
      */
     public function definition(): array
     {
-        $types = ['Deponija', 'Vazduh', 'Posumljavanje', 'Korita'];
         return [
             'name'=>fake()->lastName(),
-            'type' => $this->faker->randomElement($types),
+            'type_id' => Type::inRandomOrder()->first()->id,
             'location'=> $this->faker->city,
             'description'=> $this->faker->sentence,
             'user_id' => User::factory(),

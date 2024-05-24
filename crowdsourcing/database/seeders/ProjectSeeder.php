@@ -13,7 +13,7 @@ class ProjectSeeder extends Seeder
      */
     public function run(): void
     {
-        Project::create([
+/*         Project::create([
             'name'=>"projekat 1",
             'type'=>"Deponija",
             'location'=>"srbija",
@@ -31,6 +31,6 @@ class ProjectSeeder extends Seeder
             'type'=>"Posumljavanje",
             'location'=>"srbija",
             'user_id'=>1,
-        ]);
+        ]); */
     }
 }
