@@ -8,16 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Donation extends Model
 {
 
-    public function scopeEmail($query, $email)
-    {
-        return $query->where('email', $email);
-    }
-
-    public function scopeProjectId($query, $projectId)
-    {
-        return $query->where('project_id', $projectId);
-    }
-    
     use HasFactory;
 
     protected $fillable = [
@@ -33,4 +23,14 @@ class Donation extends Model
 /*     public function user(){
         return $this->belongsTo(User::class);
     } */
+
+    public function scopeEmail($query, $email)
+    {
+        return $query->where('email', $email);
+    }
+
+    public function scopeProjectId($query, $projectId)
+    {
+        return $query->where('project_id', $projectId);
+    }
 }
