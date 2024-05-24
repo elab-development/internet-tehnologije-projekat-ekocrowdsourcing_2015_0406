@@ -13,9 +13,24 @@ class ProjectController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $projects = Project::all();
+         $query = Project::query();
+
+         if ($request->has('type')) {
+             $query->type($request->input('type'));
+         }
+ 
+         if ($request->has('location')) {
+             $query->location($request->input('location'));
+         }
+ 
+/*          if ($request->has('user_id')) {
+             $query->creator($request->input('user_id'));
+         } */
+ 
+        $projects = $query->paginate(10);
+/*         $projects = Project::all(); */
 
         return new ProjectCollection($projects);
     }

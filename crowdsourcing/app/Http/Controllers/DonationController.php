@@ -12,11 +12,21 @@ class DonationController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $donation = Donation::all();
+        $query = Donation::query();
 
-        return new DonationCollection($donation);
+        if ($request->has('email')) {
+            $query->email($request->input('email'));
+        }
+
+        if ($request->has('project_id')) {
+            $query->projectId($request->input('project_id'));
+        }
+
+        $donations = $query->paginate(10);
+
+        return new DonationCollection($donations);
     }
 
     /**
