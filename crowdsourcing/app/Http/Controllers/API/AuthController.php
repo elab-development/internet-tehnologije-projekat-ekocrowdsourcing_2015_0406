@@ -26,9 +26,9 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users|max:255',
             'password' => 'required|min:8',
-            'type' => 'sometimes|string|max:255'
         ]);
-
+        $data['type'] = 'user';
+        
         if($validator->fails()){
             return response()->json($validator->errors());
         }
@@ -46,7 +46,7 @@ class AuthController extends Controller
         }
 
         if (!Auth::attempt($request->only('email', 'password'))) {
-            return response()->json(['message' => 'Wrong credentials'], 401);
+            return response()->json(['sucess'=>false]);
         }
 
         $user = User::where('email', $request['email'])->firstOrFail();
@@ -56,8 +56,7 @@ class AuthController extends Controller
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        return response()->json([
-            'message' => 'Welcome ' . $user->name . '!',
+        return response()->json(['sucess'=>true,
             'access_token' => $token,
             'token_type' => 'Bearer',
         ]);

@@ -53,11 +53,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 Route::resource('donations', DonationController::class)->only(['show','index']); //radi
 Route::resource('projects.donations', ProjectDonationController::class)->only([/* 'show', */'index']); //radi
 Route::resource('projects', ProjectController::class)->only(['show','index']); //radi
-Route::resource('users', UserController::class)->only(['store']);
+
 Route::post('/register', [AuthController::class, 'register']); //radi
 Route::post('/login', [AuthController::class, 'login']); //radi
-
- //radi samo admin
 
 
 
