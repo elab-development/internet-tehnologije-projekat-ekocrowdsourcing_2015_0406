@@ -81,15 +81,15 @@ class DonationController extends Controller
         } 
 
         $validatedData = $request->validate([
-            'email' => 'required|string|max:255',
-            'amount' => 'required|numeric',
-            'description' => 'nullable|string',
-            'project_id' => 'required'
+            'email' => 'sometimes|string|max:255',
+            'amount' => 'sometimes|numeric',
+            'description' => 'sometimes|string',
+            'project_id' => 'sometimes'
         ]);
 
         $donation->update($validatedData);
 
-        return response()->json(['message' => 'Donation updated successfully', 'User:' => new DonationResource($donation)]);
+        return response()->json(['message' => 'Donation updated successfully', 'Donation:' => new DonationResource($donation)]);
     }
 
     /**
