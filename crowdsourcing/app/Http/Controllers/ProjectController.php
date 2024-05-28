@@ -53,7 +53,8 @@ class ProjectController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'type_id' => 'required|exists:types,id',
-            'location' => 'required|min:4',
+            'location' => 'required|min:2',
+            'description' => 'sometimes|min:4',
         ]);
 
         $validatedData['user_id'] = $user_id;
@@ -89,15 +90,14 @@ class ProjectController extends Controller
             return response()->json(['message' => 'Project not found'], 404);
         } 
         $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'type_id' => 'required|exists:types,id',
-            'description'=>'nullable',
-            'location' => 'required|min:4',
-            'user_id' => 'required|exists:users,id' 
+            'name' => 'sometimes|string|max:255',
+            'type_id' => 'sometimes|exists:types,id',
+            'description'=>'sometimes',
+            'location' => 'sometimes|min:4'
         ]);
 
         $project->update($validatedData);
-        return response()->json(['message' => 'Project updated successfully', 'User:' => new ProjectResource($project)]);
+        return response()->json(['message' => 'Project updated successfully', 'Project:' => new ProjectResource($project)]);
        
     }
 
