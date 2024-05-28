@@ -16,7 +16,7 @@ Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
         Route::patch('/update-user/{id}', [UserController::class, 'update']);
         Route::resource('users', UserController::class); //radi za admin i mod, treba proveriti kako destroy user a da ne ide preko user id
         Route::resource('donations', DonationController::class);
-        Route::post('types', [TypeController::class, 'store']);
+        Route::resource('types', TypeController::class);
         Route::delete('types/{type}', [TypeController::class, 'destroy']);
         Route::get('/admin-dashboard', function () { //radi samo za admin
         return 'Welcome to the admin dashboard!';
@@ -40,12 +40,12 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::patch('/update-user', [UserController::class, 'updateMe']);
     Route::get('/profile', [UserController::class, 'showCurrent']);
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::post('/create-donation', [DonationController::class, 'store']); 
     Route::resource('users.projects', UserProjectController::class)->only(['show','index']); 
     Route::resource('projects', ProjectController::class)->only(['store']);
 });
 
 //svi mogu
+Route::post('/create-donation', [DonationController::class, 'store']); 
 Route::resource('donations', DonationController::class)->only(['show','index']); //radi
 Route::resource('projects.donations', ProjectDonationController::class)->only([/* 'show', */'index']); //radi
 Route::resource('projects', ProjectController::class)->only(['show','index']); //radi
