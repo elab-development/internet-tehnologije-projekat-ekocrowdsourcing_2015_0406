@@ -14,18 +14,18 @@ use Illuminate\Support\Facades\Route;
 Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {       
     // samo admini mogu da pristupe ovim rutama
         Route::patch('/update-user/{id}', [UserController::class, 'update']);
-        Route::resource('users', UserController::class); //radi za admin i mod, treba proveriti kako destroy user a da ne ide preko user id
+        Route::resource('users', UserController::class); 
         Route::resource('donations', DonationController::class);
         Route::resource('types', TypeController::class);
         Route::delete('types/{type}', [TypeController::class, 'destroy']);
-        Route::get('/admin-dashboard', function () { //radi samo za admin
+        Route::get('/admin-dashboard', function () { 
         return 'Welcome to the admin dashboard!';
     });
 });
 
 Route::group(['middleware' => ['auth:sanctum', 'mod']], function () {       
     //samo mod mogu da pristupe ovim rutama   
-    Route::get('/mod-dashboard', function () { //radi samo za mod
+    Route::get('/mod-dashboard', function () {
         return 'Welcome to the moderator dashboard!';
     });
 });
@@ -47,7 +47,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 //svi mogu
 Route::post('/create-donation', [DonationController::class, 'store']); 
 Route::resource('donations', DonationController::class)->only(['show','index']); //radi
-Route::resource('projects.donations', ProjectDonationController::class)->only([/* 'show', */'index']); //radi
+Route::resource('projects.donations', ProjectDonationController::class)->only(['index']); //radi
 Route::resource('projects', ProjectController::class)->only(['show','index']); //radi
 Route::post('/register', [AuthController::class, 'register']); //radi
 Route::post('/login', [AuthController::class, 'login']); //radi
