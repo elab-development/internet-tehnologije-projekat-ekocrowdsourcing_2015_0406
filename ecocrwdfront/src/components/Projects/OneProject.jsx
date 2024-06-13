@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { FaDonate } from "react-icons/fa";
 import { MdFavorite, MdFavoriteBorder } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
+import { MdEdit } from "react-icons/md";
 import axios from 'axios';
 
 const OneProject = ({ project, userRole, handleShowModal }) => {
@@ -8,6 +10,7 @@ const OneProject = ({ project, userRole, handleShowModal }) => {
 
   const toggleFavorite = () => {
     setIsFavorite(!isFavorite);
+    console.log(userRole);
   };
 
   return (
@@ -27,12 +30,12 @@ const OneProject = ({ project, userRole, handleShowModal }) => {
             <button className="btn ml-2" onClick={toggleFavorite}>
               {isFavorite ? <MdFavorite /> : <MdFavoriteBorder />}
             </button>
-            {userRole === 'admin' && (
+            {(userRole === 'admin' || userRole === 'mod') &&
               <>
-                <button className="btn ml-2">Update</button>
-                <button className="btn ml-2">Delete</button>
+                <button className="btn ml-2"><MdEdit /></button>
+                <button className="btn ml-2"><MdDelete /></button>
               </>
-            )}
+            }
           </div>
         </div>
       </div>

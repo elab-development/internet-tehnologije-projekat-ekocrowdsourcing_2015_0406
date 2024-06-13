@@ -3,7 +3,7 @@ import NavBar from './components/NavBar';
 import Projects from './components/Projects/Projects';
 import Donations from './components/Donations/Donations';
 import LoginPage from './components/Users/LoginPage';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
@@ -123,21 +123,47 @@ function App() {
 
   const [token, setToken] = useState(sessionStorage.getItem('auth_token'));
   const [userRole, setUserRole] = useState('');
+  useEffect(() => {
+    if (token) {
+      fetchUserDetails(token);
+    }
+  }, [token]);
 
+  function handleLogout(){
+    let config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      url: 'api/logout/',
+      headers: { 
+        'Authorization': "Bearer "+window.sessionStorage.getItem("auth_token")
+      }
+    };
+    
+    axios.request(config)
+    .then((response) => {
+      console.log(JSON.stringify(response.data));
+      window.sessionStorage.setItem("auth_token", null);
+      setToken(null);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+    
+  }
   const addToken = (auth_token) => {
     setToken(auth_token);
     fetchUserDetails(auth_token);
   };
 
   const fetchUserDetails = (token) => {
-    axios.get('http://127.0.0.1:8000/api/profile', {
+    axios.get('api/profile', {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     })
     .then((response) => {
-      setUserRole(response.data.type);
-      console.log(response.data.type);
+      setUserRole(response.data.User.type);
+      console.log(response.data.User.type);
     })
     .catch((error) => {
       console.error(error);
@@ -147,7 +173,7 @@ function App() {
   return (
     <BrowserRouter className="App">
       <Routes>
-        <Route path="/" element={<NavBar token={token} />}>
+        <Route path="/" element={<NavBar token={token} handleLogout={handleLogout}/>}>
           <Route path="projects" element={<Projects projects={projects} userRole={userRole}/>}/>
           <Route path="donations" element={<Donations donations={donations}/>}/>
           <Route
