@@ -20,8 +20,8 @@ class DonationResource extends JsonResource
             'id' => $this->resource->id,
             'email'=> $this->resource->email,
             'amount'=> $this->resource->amount,
-            'donation message'=> $this->resource->description,
-            'project'=> new ProjectResource($this->resource->project),
+            'description'=> $this->resource->description,
+            'project'=> $this->resource->project->name // ovo je promenjeno
 
         ];}
         else{
@@ -29,7 +29,7 @@ class DonationResource extends JsonResource
                 'id' => $this->resource->id,
                 'email'=> $this->resource->email,
                 'amount'=> $this->resource->amount,
-                'project'=> new ProjectResource($this->resource->project)
+                'project'=> $this->resource->project->name
             ];
             
         }

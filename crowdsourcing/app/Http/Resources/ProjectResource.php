@@ -20,7 +20,7 @@ class ProjectResource extends JsonResource
                 'name' => $this->resource->name,
                 'type' => $this->resource->type->name,
                 'location' => $this->resource->location,
-                'project description' => $this->resource->description,
+                'description' => $this->resource->description,
                 'user' => $this->resource->user->name,
             ];}
             else{
