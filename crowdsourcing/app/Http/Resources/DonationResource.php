@@ -17,6 +17,7 @@ class DonationResource extends JsonResource
     {
         if($this->resource->description != null){
         return [
+            'id' => $this->resource->id,
             'email'=> $this->resource->email,
             'amount'=> $this->resource->amount,
             'donation message'=> $this->resource->description,
@@ -25,6 +26,7 @@ class DonationResource extends JsonResource
         ];}
         else{
             return[
+                'id' => $this->resource->id,
                 'email'=> $this->resource->email,
                 'amount'=> $this->resource->amount,
                 'project'=> new ProjectResource($this->resource->project)
