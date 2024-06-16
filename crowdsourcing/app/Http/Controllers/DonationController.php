@@ -20,11 +20,14 @@ class DonationController extends Controller
             $query->email($request->input('email'));
         }
 
-        if ($request->has('project_id')) {
-            $query->projectId($request->input('project_id'));
+        if ($request->has('project_name')) {
+            $projectName = $request->input('project_name');
+            $query->whereHas('project', function($q) use ($projectName) {
+                $q->where('name', 'like', '%' . $projectName . '%'); //'name' specifies the column (name) in the projects table (associated with the project relationship).
+            });
         }
 
-        $donations = $query->paginate(10);
+        $donations = $query->paginate(15);
 
         return new DonationCollection($donations);
     }
