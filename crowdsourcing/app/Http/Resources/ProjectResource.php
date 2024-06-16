@@ -17,6 +17,7 @@ class ProjectResource extends JsonResource
     {
         if($this->resource->description != null){
             return [
+                'id' => $this->resource->id,
                 'name' => $this->resource->name,
                 'type' => $this->resource->type->name,
                 'location' => $this->resource->location,
@@ -25,6 +26,7 @@ class ProjectResource extends JsonResource
             ];}
             else{
                 return [
+                    'id' => $this->resource->id,
                     'name' => $this->resource->name,
                     'type' => $this->resource->type->name,
                     'location' => $this->resource->location,
