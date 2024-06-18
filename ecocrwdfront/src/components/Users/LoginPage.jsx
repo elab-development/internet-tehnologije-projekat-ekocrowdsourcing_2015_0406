@@ -14,7 +14,7 @@ const LoginPage = ({addToken}) => {
     const [userRole, setUserRole] = useState(false);
 
     const fetchUserDetails = (token) => {
-      axios.get("http://127.0.0.1:8000/api/profile", {
+      axios.get("api/profile", {
         headers: {
           'Authorization': `Bearer ${token}`
         }
