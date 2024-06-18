@@ -16,8 +16,9 @@ class DonationController extends Controller
     {
         $query = Donation::query();
 
-        if ($request->has('email')) {
-            $query->email($request->input('email'));
+        if ($request->has('email')) { //da li  request ima parametar email
+            $email = $request->input('email'); //uzima email vrednost iz request 
+            $query->where('email', 'like', '%' . $email . '%'); //email - kolona iz tabele koju proveravam, like - SQL operator pattern matching, %.email.% je pattern za like pretragu
         }
 
         if ($request->has('project_name')) {
