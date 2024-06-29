@@ -19,16 +19,15 @@ const Donations = ({projects, userRole, token}) => {
     console.log(searchTerm);
   };
 
-  const handleProjectChange = (e) => {
-    const { value, checked } = e.target;
-    setSelectedProjects((prevSelected) =>
-      checked ? [...prevSelected, value] : prevSelected.filter((project) => project !== value)
-    );
+  const handleProjectChange = (e) => { //parametar e - event checkbox
+    const { value, checked } = e.target; // value - project name iz liste; checked je boolean
+    setSelectedProjects((prevSelected) => //prevSelected je placeholder koji predstavlja prethodno stanje selectedProjects varijable
+      checked ? [...prevSelected, value] : prevSelected.filter((project) => project !== value) //ako je checked, pravi novi niz sa svim prethodno oznacenim i value (ime projekta)
+    );          //na taj nacin dodajem novi oznacen projekat na prethodno oznacene | prevSelected.filter pravi novi niz koji sadrzi projekte koji nisu jednaki "value" (value od "odznacenog")
   };
 
 
-
-  const fetchDonations = async (page, email = '', projects = []) => {
+  const fetchDonations = async (page, email = '', projects = []) => { //async omogucava simultano izvrsavanje vise operacija
     try {
       let params = { page };
 
@@ -38,9 +37,9 @@ const Donations = ({projects, userRole, token}) => {
       if (projects.length > 0) {
         params.project_name = projects.join(',');
       }
-      const response = await axios.get(`/api/donations`, { params });
+      const response = await axios.get(`/api/donations`, { params }); //await pauzira izvrsavanje dok se ne zavrsi request
        // await keyword ensures that the function waits for the request to complete before continuing
-      console.log('API Donation Response:', response.data); // Log the API response
+      console.log('API Donation Response:', response.data);
       setDonations(response.data.Donations);
       setTotalPages(response.data.meta.last_page);
     } catch (error) {
