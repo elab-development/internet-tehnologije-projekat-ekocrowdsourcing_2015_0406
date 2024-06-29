@@ -3,7 +3,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const LoginPage = ({addToken}) => {
+const LoginPage = ({addToken, fetchUserDetails}) => {
     const[userData, setUserData]=useState({
       email: "",
       password:"",
@@ -11,21 +11,6 @@ const LoginPage = ({addToken}) => {
 
     let navigate = useNavigate();
 
-    const [userRole, setUserRole] = useState(false);
-
-    const fetchUserDetails = (token) => {
-      axios.get("api/profile", {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      })
-      .then((response) => {
-        setUserRole(response.data.type); // Store user role
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-    };
 
     function handleInput(e){
       let newUserData = userData;
