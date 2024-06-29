@@ -1,9 +1,10 @@
 import React from 'react';
-import OneProject from './OneProject';
+import ProjectCard from '../Reusable/ProjectCard';
 import axios from 'axios';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-const Projects = ({projects, userRole }) => {
+const Projects = ({userRole, token, projects, fetchProjects, currentPage, setCurrentPage, totalPages}) => {
+
 
   const [currentProject, setCurrentProject] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -12,6 +13,24 @@ const Projects = ({projects, userRole }) => {
   const [donationDescription, setDonationDescription] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
+
+
+
+  const handleDelete = async (projectId) => {
+    try {
+      await axios.delete(`api/projects/${projectId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      }); // Send DELETE request to /api/projects/:id
+      console.log(`Project with ID ${projectId} deleted successfully.`);
+      fetchProjects();
+    } catch (error) {
+      console.error('Error deleting project:', error);
+      // Handle error, e.g., show error message to user
+    }
+  };
+
   const handleShowModal = (project) => {
     setCurrentProject(project);
     setShowModal(true);
@@ -19,6 +38,7 @@ const Projects = ({projects, userRole }) => {
 
   const handleCloseModal = () => {
     setShowModal(false);
+    setCurrentProject(null);
   };
 
   const handleDonationChange = (e) => {
@@ -31,6 +51,16 @@ const Projects = ({projects, userRole }) => {
     setDonationDescription(e.target.value);
   };
 
+  const handleSave = (projectData) => {
+    if (currentProject) {
+      // Update the existing project logic
+    } else {
+      // Add new project logic
+    }
+    setShowModal(false);
+    setCurrentProject(null);
+  };
+
   const handleDonate = () => {
     axios.post('api/create-donation/', {
       email: donationEmail,
@@ -41,6 +71,7 @@ const Projects = ({projects, userRole }) => {
       .then((response) => {
         console.log(response.data);
         setSuccessMessage('Donation successful! Thank you for your support.');
+        console.log(successMessage);
         setShowModal(false);
         // Clear the success message after 5 seconds
         setTimeout(() => {
@@ -51,14 +82,49 @@ const Projects = ({projects, userRole }) => {
         console.error('Donation failed:', error);
       });
   };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
   
   return (
-    <div className="container">
-        <div className="row">
-        {projects === null ? "No projects" : projects.map((proj)=>
-            <OneProject project={proj} key={proj.id} userRole={userRole} handleShowModal={handleShowModal}/>
-        )}
+    <div className="container mt-3">
+      <div className="row">
+        {projects === null ? "No projects" : projects.map((proj)=>(
+            <div className="col-md-4 mb-4" key={proj.id}>
+            <ProjectCard project={proj} />
+            </div>
+        ))}
+      </div>
+      <div className="row justify-content-between">
+        <div className="col-1">
+          <button 
+            className="btn btn-primary mb-3" 
+            onClick={handlePrevPage} 
+            disabled={currentPage === 1} 
+          >
+            &lt;
+          </button>
         </div>
+        <div className="col-1 text-end">
+          <button 
+            className="btn btn-primary mb-3" 
+            onClick={handleNextPage} 
+            disabled={currentPage === totalPages} 
+          >
+            &gt;
+          </button>
+        </div>
+      </div>
+
 
         {currentProject && (
         <div className={`modal fade ${showModal ? 'show d-block' : ''}`} tabIndex="-1" style={{ display: showModal ? 'block' : 'none' }}>
