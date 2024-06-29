@@ -5,6 +5,8 @@ import { Outlet } from 'react-router-dom';
 
 function NavBar({token, handleLogout}) {
 
+
+
   return (
     <div> 
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -20,8 +22,7 @@ function NavBar({token, handleLogout}) {
             <Link className="nav-link" to="/donations">Donations</Link>
             {token == null ? 
               (<Link className="nav-link" to="/login">Log in/Register</Link>) :
-              (<Link className="nav-link" to="/" onClick={(e) => { e.preventDefault(); handleLogout(); }}>Log out</Link>) 
-              //prevent default sprecava da ne prebaci usera na default putanju, to regulisem u handlelogout
+              (<Link className="nav-link" to="/" onClick={(e) => { e.preventDefault(); handleLogout(); }}>Log out</Link>)
             }
             
           </div>
