@@ -109,8 +109,7 @@ const Projects = ({userRole, token, projects, fetchProjects, currentPage, setCur
           <button 
             className="btn btn-primary mb-3" 
             onClick={handlePrevPage} 
-            disabled={currentPage === 1} 
-          >
+            disabled={currentPage === 1}>
             &lt;
           </button>
         </div>
@@ -118,8 +117,7 @@ const Projects = ({userRole, token, projects, fetchProjects, currentPage, setCur
           <button 
             className="btn btn-primary mb-3" 
             onClick={handleNextPage} 
-            disabled={currentPage === totalPages} 
-          >
+            disabled={currentPage === totalPages}>
             &gt;
           </button>
         </div>
