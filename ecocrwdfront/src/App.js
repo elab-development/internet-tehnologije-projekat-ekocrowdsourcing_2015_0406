@@ -1,6 +1,7 @@
 import './App.css';
 import NavBar from './components/NavBar';
 import Projects from './components/Projects/Projects';
+import ProjectCard from './components/Reusable/ProjectCard';
 import Donations from './components/Donations/Donations';
 import LoginPage from './components/Users/LoginPage';
 import { useState, useEffect } from 'react';
@@ -9,182 +10,65 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import RegisterPage from './components/Users/RegisterPage';
-
-const donations = [
-  {
-    id: 1,
-    email: "Chocolate",
-    amount: "Chocolate",  
-    description:
-      "Chocolate is a food made from cacao beans. It is used in many desserts like pudding, cakes and candy",
-    project_id: "User 1",
-  },
-  {
-    id: 2,
-    email: "Lollypop",
-    amount: "Lollypop",
-    description:
-    "Lollipops are available in a number of colors and flavors, particularly fruit flavors.",
-    project_id: "User 1",
-  },
-  {
-    id: 3,
-    email: "Ice Cream",
-    amount: "Ice Cream",
-    description:
-      "Ice cream is a sweetened frozen food typically eaten as a snack or dessert.",
-    project_id: "User 2",
-  },
-  {
-    id: 4,
-    email: "Chocolate",
-    amount: "Chocolate",
-    description:
-      "Chocolate is a food made from cacao beans. It is used in many desserts like pudding, cakes and candy",
-    project_id: "User 1",
-  },
-  {
-    id: 5,
-    email: "Lollypop",
-    amount: "Lollypop",
-    description:
-    "Lollipops are available in a number of colors and flavors, particularly fruit flavors.",
-    project_id: "User 1",
-  },
-  {
-    id: 6,
-    email: "Ice Cream",
-    amount: "Ice Cream",
-    description:
-      "Ice cream is a sweetened frozen food typically eaten as a snack or dessert.",
-    project_id: "User 2",
-  },
-];
-const projects = [
-  {
-    id: 1,
-    title: "Chocolate",
-    type: "Chocolate",
-    location: "Chocolate",
-    description:
-      "Chocolate is a food made from cacao beans. It is used in many desserts like pudding, cakes and candy",
-    user: "User 1",
-  },
-  {
-    id: 2,
-    title: "Lollypop",
-    type: "Lollypop",
-    location: "Lollypop",
-    description:
-    "Lollipops are available in a number of colors and flavors, particularly fruit flavors.",
-    user: "User 1",
-  },
-  {
-    id: 3,
-    title: "Ice Cream",
-    type: "Ice Cream",
-    location: "Ice Cream",
-    description:
-      "Ice cream is a sweetened frozen food typically eaten as a snack or dessert.",
-    user: "User 2",
-  },
-  {
-    id: 4,
-    title: "Chocolate",
-    type: "Chocolate",
-    location: "Chocolate",
-    description:
-      "Chocolate is a food made from cacao beans. It is used in many desserts like pudding, cakes and candy",
-    user: "User 1",
-  },
-  {
-    id: 5,
-    title: "Lollypop",
-    type: "Lollypop",
-    location: "Lollypop",
-    description:
-    "Lollipops are available in a number of colors and flavors, particularly fruit flavors.",
-    user: "User 1",
-  },
-  {
-    id: 6,
-    title: "Ice Cream",
-    type: "Ice Cream",
-    location: "Ice Cream",
-    description:
-      "Ice cream is a sweetened frozen food typically eaten as a snack or dessert.",
-    user: "User 2",
-  },
-];
-
-
+import Homepage from './components/Homepage';
 
 function App() {
 
   const [token, setToken] = useState(sessionStorage.getItem('auth_token'));
   const [userRole, setUserRole] = useState('');
+  const [projects, setProjects] = useState([]);
+  const [latestProjects, setLatestProjects] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
   useEffect(() => {
-    if (token) {
-      fetchUserDetails(token);
+    fetchProjects(currentPage).then(() => {
+      fetchLatestProjects();
+    });
+  }, [currentPage]);
+  
+  const fetchProjects = async (page) => {
+    try {
+      const response = await axios.get(`/api/projects?page=${page}`);
+      setProjects(response.data.Projects);
+      setTotalPages(response.data.meta.last_page);
+      console.log("Total pages: ", totalPages);
+      return Promise.resolve(); // Add this line
+    } catch (error) {
+      console.error('Error fetching projects:', error);
+      return Promise.reject(error); // Add this line
     }
-  }, [token]);
-
-  function handleLogout(){
-    let config = {
-      method: 'post',
-      maxBodyLength: Infinity,
-      url: 'api/logout/',
-      headers: { 
-        'Authorization': "Bearer "+window.sessionStorage.getItem("auth_token")
-      }
-    };
-    
-    axios.request(config)
-    .then((response) => {
-      console.log(JSON.stringify(response.data));
-      window.sessionStorage.setItem("auth_token", null);
-      setToken(null);
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-    
-  }
-  const addToken = (auth_token) => {
-    setToken(auth_token);
-    fetchUserDetails(auth_token);
+  };
+  
+  const fetchLatestProjects = async () => {
+    try {
+      const response = await axios.get(`/api/projects?page=${totalPages}`);
+      const projects = response.data.Projects;
+      setLatestProjects(projects.slice(-3));
+    } catch (error) {
+      console.error('Error fetching latest projects:', error);
+    }
   };
 
-  const fetchUserDetails = (token) => {
-    axios.get('api/profile', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-    .then((response) => {
-      setUserRole(response.data.User.type);
-      console.log(response.data.User.type);
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-  };
+  
 
   return (
     <BrowserRouter className="App">
+      <NavBar />
       <Routes>
-        <Route path="/" element={<NavBar token={token} handleLogout={handleLogout}/>}>
-          <Route path="projects" element={<Projects projects={projects} userRole={userRole}/>}/>
-          <Route path="donations" element={<Donations donations={donations}/>}/>
+        <Route path="/" element={<Homepage latestProjects={latestProjects} />} />
+        <Route path="projects" 
+        element={<Projects ProjectCard={ProjectCard} projects={projects} fetchProjects={fetchProjects} 
+        currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalPages} /* userRole={userRole} token={token}  */ />}/>
+          {/* <Route path="donations" element={<Donations userRole={userRole} projects={projects} token={token}/>}/>
           <Route
           path="login" 
-          element={<LoginPage addToken={addToken}/>}
+          element={<LoginPage fetchUserDetails={fetchUserDetails} addToken={addToken}/>}
         /> 
         <Route
           path="register" 
           element={<RegisterPage/>}
-        /> 
-        </Route>
+        />  */}
       </Routes>
     </BrowserRouter>
   );
