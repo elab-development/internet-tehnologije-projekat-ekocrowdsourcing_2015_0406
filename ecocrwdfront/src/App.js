@@ -99,10 +99,13 @@ function App() {
       <NavBar token={token} handleLogout={handleLogout}/>
       <Routes>
         <Route path="/" element={<Homepage latestProjects={latestProjects} />} />
+        
         <Route path="projects" 
         element={<Projects ProjectCard={ProjectCard} projects={projects} fetchProjects={fetchProjects} 
         currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalPages} userRole={userRole} /*  token={token}  */ />}/>
-        {/* <Route path="donations" element={<Donations userRole={userRole} projects={projects} token={token}/>}/> */}
+
+        <Route path="donations" element={<Donations userRole={userRole} projects={projects} token={token}/>}/>
+
         <Route
           path="login" 
           element={<LoginPage fetchUserDetails={fetchUserDetails} addToken={addToken}/>}

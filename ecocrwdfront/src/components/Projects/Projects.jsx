@@ -97,6 +97,7 @@ const Projects = ({userRole, token, projects, fetchProjects, currentPage, setCur
   
   return (
     <div className="container mt-3">
+      <h2>Projects on our platform:</h2>
       <div className="row">
         {projects === null ? "No projects" : projects.map((proj)=>(
             <div className="col-md-4 mb-4" key={proj.id}>
