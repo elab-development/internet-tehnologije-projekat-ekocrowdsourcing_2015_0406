@@ -15,21 +15,21 @@ class ProjectController extends Controller
      */
     public function index(Request $request)
     {
-         $query = Project::query();
+        $query = Project::query();
 
-         if ($request->has('type_id')) {
+        if ($request->has('type_id')) {
              $query->type($request->input('type_id'));
          }
  
-         if ($request->has('location')) {
+        if ($request->has('location')) {
              $query->location($request->input('location'));
          }
  
-/*          if ($request->has('user_id')) {
+        if ($request->has('user_id')) {
              $query->creator($request->input('user_id'));
-         } */
+         }
  
-        $projects = $query->paginate(10);
+        $projects = $query->paginate(12);
 /*         $projects = Project::all(); */
 
         return new ProjectCollection($projects);
