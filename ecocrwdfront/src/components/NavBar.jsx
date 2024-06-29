@@ -22,9 +22,16 @@ function NavBar({token, handleLogout}) {
             <Link className="nav-link" to="/donations">Donations</Link>
             {token == null ? 
               (<Link className="nav-link" to="/login">Log in/Register</Link>) :
-              (<Link className="nav-link" to="/" onClick={(e) => { e.preventDefault(); handleLogout(); }}>Log out</Link>)
+              (<Link className="nav-link" to="/profile">Profile</Link>
+              )
             }
-            
+            {token != null && (
+              <ul className="navbar-nav ml-auto">
+                <li className="nav-item">
+                  <Link className="nav-link" to="/" onClick={(e) => { e.preventDefault(); handleLogout(); }}>Log out</Link>
+                </li>
+              </ul>
+            )}
           </div>
         </div>
       </div>

@@ -50,25 +50,67 @@ function App() {
     }
   };
 
+  const fetchUserDetails = (token) => {
+    if(token===null){
+      return;
+    }
+    axios.get('api/profile', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+    .then((response) => {
+      setUserRole(response.data.User.type);
+      console.log(response.data.User.type);
+    })
+    .catch((error) => {
+      console.error(error);
+    });
+  }
+
+  const addToken = (auth_token) => {
+    setToken(auth_token);
+    fetchUserDetails(auth_token);
+  };
+
+  function handleLogout(){
+    let config = {
+      method: 'post',
+      url: 'api/logout/',
+      headers: { 
+        'Authorization': "Bearer "+window.sessionStorage.getItem("auth_token")
+      }
+    };
+
+    axios.request(config)
+    .then((response) => {
+      console.log(JSON.stringify(response.data));
+      window.sessionStorage.setItem("auth_token", null);
+      setToken(null);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+}
   
 
   return (
     <BrowserRouter className="App">
-      <NavBar />
+      <NavBar token={token} handleLogout={handleLogout}/>
       <Routes>
         <Route path="/" element={<Homepage latestProjects={latestProjects} />} />
         <Route path="projects" 
         element={<Projects ProjectCard={ProjectCard} projects={projects} fetchProjects={fetchProjects} 
-        currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalPages} /* userRole={userRole} token={token}  */ />}/>
-          {/* <Route path="donations" element={<Donations userRole={userRole} projects={projects} token={token}/>}/>
-          <Route
+        currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalPages} userRole={userRole} /*  token={token}  */ />}/>
+        {/* <Route path="donations" element={<Donations userRole={userRole} projects={projects} token={token}/>}/> */}
+        <Route
           path="login" 
           element={<LoginPage fetchUserDetails={fetchUserDetails} addToken={addToken}/>}
         /> 
         <Route
           path="register" 
           element={<RegisterPage/>}
-        />  */}
+        />
 
     </Routes>
     </BrowserRouter>
