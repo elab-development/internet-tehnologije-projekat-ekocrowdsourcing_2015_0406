@@ -46,7 +46,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
 //svi mogu
 Route::post('/create-donation', [DonationController::class, 'store']); 
-Route::resource('donations', DonationController::class)->only(['show','index']); //radi
+Route::resource('donations', DonationController::class)->only(['show','index','store']); //radi
 Route::resource('projects.donations', ProjectDonationController::class)->only(['index']); //radi
 Route::resource('projects', ProjectController::class)->only(['show','index']); //radi
 Route::get('/latest-projects', [ProjectController::class, 'latestProjects']);
