@@ -1,12 +1,12 @@
 import React from 'react';
 
 
-const ProjectCard = ({project}) => {
+const ProjectCard = ({show, project, handleDelete, userRole, handleEdit}) => {
   return (
     <div className="container mt-1">
-    <div className="card" style={{ width: '18rem' }}>
+    <div className="card w-100">
 
-      <img src="https://picsum.photos/200" className="card-img-top" alt="Project Image" style={{ height: '50%', objectFit: 'cover' }} />
+      <img src="https://picsum.photos/400" className="card-img-top" alt="Project Image" style={{ height: '50%', objectFit: 'cover' }} />
 
       <div className="card-body">
         <h5 className="card-title"><strong>{project.name} </strong></h5>
@@ -15,7 +15,13 @@ const ProjectCard = ({project}) => {
         <p className="card-text"><strong>Description:</strong> {project.description}</p>
         <p className="card-text"><strong>Created by:</strong> {project.user}</p>
 
-        <a href="#" className="btn btn-primary">Action Button</a>
+        <button className="btn btn-primary">Donate Button</button>
+        {userRole === 'admin' ? (
+          <div>
+            <button className="btn btn-warning" onClick={() => handleEdit(project)}>Edit Button</button>
+            <button className="btn btn-danger" onClick={() => handleDelete(project.id)}>Delete Button</button>
+          </div>
+        ) : null}
       </div>
     </div>
   </div>
