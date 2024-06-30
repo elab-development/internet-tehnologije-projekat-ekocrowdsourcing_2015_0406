@@ -1,6 +1,5 @@
 import React from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
-import { useState } from 'react';
 
 const ProjectModal = ({ show, handleClose, handleSave, types, formData, setFormData }) => {
 
@@ -33,6 +32,7 @@ const ProjectModal = ({ show, handleClose, handleSave, types, formData, setFormD
                     name="name"
                     value={formData.name}
                     onChange={handleChange}
+                    required
                 />
             </Form.Group>
 
@@ -42,8 +42,9 @@ const ProjectModal = ({ show, handleClose, handleSave, types, formData, setFormD
               name="type_id"
               value={formData.type_id}
               onChange={handleChange}
+              required
             >
-              <option>Select a type...</option>
+              <option value="">Select a type...</option>
               {types.map((type) => (
                 <option key={type.id} value={type.id}>
                   {type.name}
@@ -59,6 +60,7 @@ const ProjectModal = ({ show, handleClose, handleSave, types, formData, setFormD
                     name="location"
                     value={formData.location}
                     onChange={handleChange}
+                    required
                 />
             </Form.Group>
 
