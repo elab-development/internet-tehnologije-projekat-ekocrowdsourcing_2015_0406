@@ -6,7 +6,7 @@ const OneDonation = ({donation, userRole, handleDelete, handleShowModal}) => {
     <tr>
     <td>{donation.email}</td>
     <td>{donation.description}</td>
-    <td>{donation.project_id}</td>
+    <td>{donation.project}</td>
     <td>{donation.amount}</td>
     {userRole === 'admin' && (
         <td>
