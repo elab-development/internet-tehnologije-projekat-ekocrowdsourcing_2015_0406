@@ -22,11 +22,11 @@ class DonationController extends Controller
         }
     
         if ($request->has('project_name')) {
-            $projectNames = explode(',', $request->input('project_name'));
-            $query->whereHas('project', function($q) use ($projectNames) {
-                $q->where(function($q) use ($projectNames) {
-                    foreach ($projectNames as $projectName) {
-                        $q->orWhere('name', 'like', '%' . $projectName . '%');
+            $projectNames = explode(',', $request->input('project_name')); // razdvoj zarezom
+            $query->whereHas('project', function($q) use ($projectNames) { //filtriraj one koje imaju neki iz array projectNames
+                $q->where(function($q) use ($projectNames) {  //nested where clause to group multiple orWhere conditions|use ($projectNames) allows the $projectNames array to be used within this nested function.
+                    foreach ($projectNames as $projectName) { //fopreach prolazi kroz svaki projectName u nizu
+                        $q->orWhere('name', 'like', '%' . $projectName . '%'); //za svaki projectName radi orWhere gde proverava da li se slaze preko SQL like operatora, sa % koji omogucava parital match
                     }
                 });
             });
