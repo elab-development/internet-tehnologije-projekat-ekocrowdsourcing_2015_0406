@@ -1,7 +1,11 @@
 import React from 'react';
 
 
-const ProjectCard = ({show, project, handleDelete, userRole, handleEdit}) => {
+const ProjectCard = ({show, project, handleDelete, userRole, handleEdit, handleOpenDonationModal}) => {
+  const handleDonateClick = () => {
+    handleOpenDonationModal(project);
+  };
+
   return (
     <div className="container mt-1">
     <div className="card w-100">
@@ -15,7 +19,7 @@ const ProjectCard = ({show, project, handleDelete, userRole, handleEdit}) => {
         <p className="card-text"><strong>Description:</strong> {project.description}</p>
         <p className="card-text"><strong>Created by:</strong> {project.user}</p>
 
-        <button className="btn btn-primary">Donate Button</button>
+        <button className="btn btn-primary" onClick={handleDonateClick}>Donate Button</button>
         {userRole === 'admin' ? (
           <div>
             <button className="btn btn-warning" onClick={() => handleEdit(project)}>Edit Button</button>
