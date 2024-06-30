@@ -15,21 +15,25 @@ class DonationController extends Controller
     public function index(Request $request)
     {
         $query = Donation::query();
-
-        if ($request->has('email')) { //da li  request ima parametar email
-            $email = $request->input('email'); //uzima email vrednost iz request 
-            $query->where('email', 'like', '%' . $email . '%'); //email - kolona iz tabele koju proveravam, like - SQL operator pattern matching, %.email.% je pattern za like pretragu
+    
+        if ($request->has('email')) {
+            $email = $request->input('email');
+            $query->where('email', 'like', '%' . $email . '%');
         }
-
+    
         if ($request->has('project_name')) {
-            $projectName = $request->input('project_name');
-            $query->whereHas('project', function($q) use ($projectName) {
-                $q->where('name', 'like', '%' . $projectName . '%'); //'name' specifies the column (name) in the projects table (associated with the project relationship).
+            $projectNames = explode(',', $request->input('project_name'));
+            $query->whereHas('project', function($q) use ($projectNames) {
+                $q->where(function($q) use ($projectNames) {
+                    foreach ($projectNames as $projectName) {
+                        $q->orWhere('name', 'like', '%' . $projectName . '%');
+                    }
+                });
             });
         }
-
+    
         $donations = $query->paginate(15);
-
+    
         return new DonationCollection($donations);
     }
 
