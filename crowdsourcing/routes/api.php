@@ -16,7 +16,6 @@ Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
         Route::patch('/update-user/{id}', [UserController::class, 'update']);
         Route::resource('users', UserController::class); 
         Route::resource('donations', DonationController::class);
-        Route::resource('types', TypeController::class);
         Route::delete('types/{type}', [TypeController::class, 'destroy']);
         Route::get('/admin-dashboard', function () { 
         return 'Welcome to the admin dashboard!';
@@ -42,6 +41,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::resource('users.projects', UserProjectController::class)->only(['show','index']); 
     Route::resource('projects', ProjectController::class)->only(['store']);
+    Route::resource('types', TypeController::class)->only(['show','index']);;
 });
 
 //svi mogu
