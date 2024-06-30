@@ -1,10 +1,8 @@
 import React from 'react';
 import ProjectCard from '../Reusable/ProjectCard';
-import ProjectModal from './ProjectModal';
-import axios from 'axios';
-import { useState, useEffect } from 'react';
+import ProjectModal from '../Reusable/ProjectModal';
 
-const Projects = ({types, handleEdit, handleSave, handleCloseModal, handleShowModal,showModal,formData,setFormData, userRole, token, projects, currentPage, setCurrentPage, totalPages, handleDelete}) => {
+const Projects = ({types, handleEdit, handleSave, handleCloseModal, handleShowModal,showModal,formData,setFormData, userRole, token, projects, currentPage, setCurrentPage, totalPages, handleDelete, handleOpenDonationModal}) => {
 
   const handlePrevPage = () => {
     if (currentPage > 1) {
@@ -33,7 +31,7 @@ const Projects = ({types, handleEdit, handleSave, handleCloseModal, handleShowMo
 
         {projects === null ? "No projects" : projects.map((proj)=>(
             <div className="col-md-4 mb-4" key={proj.id}>
-            <ProjectCard project={proj} handleDelete={handleDelete} userRole={userRole} handleEdit={handleEdit}/>
+            <ProjectCard project={proj} handleDelete={handleDelete} userRole={userRole} handleEdit={handleEdit} handleOpenDonationModal={handleOpenDonationModal}/>
             </div>
         ))}
 

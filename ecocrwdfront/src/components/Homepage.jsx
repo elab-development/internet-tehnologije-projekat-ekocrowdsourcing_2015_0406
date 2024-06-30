@@ -1,8 +1,8 @@
 import React from 'react';
 import ProjectCard from './Reusable/ProjectCard';
-import ProjectModal from './Projects/ProjectModal';
+import ProjectModal from './Reusable/ProjectModal';
 
-const Homepage = ({latestProjects, handleDelete, userRole, token, handleEdit, handleSave, handleCloseModal, handleShowModal, showModal, formData, setFormData, types}) => {
+const Homepage = ({handleOpenDonationModal, latestProjects, handleDelete, userRole, token, handleEdit, handleSave, handleCloseModal, handleShowModal, showModal, formData, setFormData, types}) => {
 
   return (
     <div className="container mt-5">
@@ -10,12 +10,12 @@ const Homepage = ({latestProjects, handleDelete, userRole, token, handleEdit, ha
       <div className="row">
         {latestProjects.map((proj) => (
           <div className="col-md-4" key={proj.id}>
-            <ProjectCard project={proj} handleDelete={handleDelete} userRole={userRole} handleEdit={handleEdit} types={types}/>
+            <ProjectCard project={proj} handleDelete={handleDelete} userRole={userRole} handleEdit={handleEdit} types={types} handleOpenDonationModal={handleOpenDonationModal}/>
           </div>
         ))}
       </div>
       <ProjectModal
-        show={showModal}
+        showModal={showModal}
         handleClose={handleCloseModal}
         handleSave={handleSave}
         formData={formData}
