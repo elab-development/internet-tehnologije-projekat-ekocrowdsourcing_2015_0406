@@ -2,8 +2,9 @@ import React from 'react';
 import OneDonation from './OneDonation';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
+import DonationModal from '../Reusable/DonationModal';
 
-const Donations = ({projects, userRole, token}) => {
+const Donations = ({projects, userRole, token, setShowDonationModal, showDonationModal }) => {
 
   const [donations, setDonations] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -32,10 +33,10 @@ const Donations = ({projects, userRole, token}) => {
       let params = { page };
 
       if (email) {
-        params.email = email;
+        params.email = email; //ako postoji, dodaje email u params
       }
-      if (projects.length > 0) {
-        params.project_name = projects.join(',');
+      if (projects.length > 0) { //ako projects niz ima bar jedan element dodaj project_name u params
+        params.project_name = projects.join(','); //konvertuje u string razdvojen zarezom
       }
       const response = await axios.get(`/api/donations`, { params }); //await pauzira izvrsavanje dok se ne zavrsi request
        // await keyword ensures that the function waits for the request to complete before continuing
@@ -86,20 +87,19 @@ const Donations = ({projects, userRole, token}) => {
     }
   };
 
-  const handleShowModal = (donationId) => {
-    const donation = donations.find((d) => d.id === donationId);
+  const handleShowModal = (donation) => {
     setSelectedDonation(donation);
-    setIsModalVisible(true);
+    setShowDonationModal(true);
   };
 
   const handleCloseModal = () => {
-    setIsModalVisible(false);
+    setShowDonationModal(false);
     setSelectedDonation(null);
   };
 
   const handleUpdateDonation = async (donationId, updatedData) => {
     try {
-      await axios.put(`api/donations/${donationId}`, updatedData, {
+      await axios.patch(`api/donations/${donationId.id}`, updatedData, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -201,14 +201,17 @@ const Donations = ({projects, userRole, token}) => {
           </div>
         </div>
       </div>
-{/*       {isModalVisible && (
-        <EditDonationModal
-          donation={selectedDonation}
-          isVisible={isModalVisible}
-          handleClose={handleCloseModal}
-          handleUpdate={handleUpdateDonation}
+      {selectedDonation && (
+        <DonationModal
+          project={selectedDonation.project} // Assuming donation has project information
+          show={showDonationModal}
+          handleSaveDonation={handleUpdateDonation}
+          handleCloseDonationModal={handleCloseModal}
+          handleUpdateDonation={handleUpdateDonation} // Assuming handleUpdateDonation method for updating donation
+          donationFormData={selectedDonation} // Pass selectedDonation as initial form data
+          setDonationFormData={setSelectedDonation} // Use setSelectedDonation to update selectedDonation
         />
-      )} */}
+      )}
     </div>
   );
 };

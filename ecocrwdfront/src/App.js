@@ -9,9 +9,10 @@ import axios from 'axios';
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import RegisterPage from './components/Users/RegisterPage';
+import RegisterPage from './components/Users/RegisterPage'; 
 import Homepage from './components/Homepage';
 import Profile from './components/Users/Profile';
+import DonationModal from './components/Reusable/DonationModal';
 
 function App() {
 
@@ -24,6 +25,23 @@ function App() {
   const [notification, setNotification] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [types, setTypes] = useState([]);
+  const [showDonationModal, setShowDonationModal] = useState(false);
+  const [selectedProject, setSelectedProject] = useState(null);
+
+  const handleOpenDonationModal = (project) => {
+      setSelectedProject(project);
+      setShowDonationModal(true);
+  };
+
+  const handleCloseDonationModal = () => {
+      setSelectedProject(null);
+      setShowDonationModal(false);
+      setDonationFormData({
+        email: '',
+        amount: 0,
+        description: '',
+      });
+  };
 
   useEffect(() => {
     fetchTypes();
@@ -105,7 +123,7 @@ function App() {
     fetchUserDetails(auth_token);
   };
 
-  function handleLogout(){
+function handleLogout(){
     let config = {
       method: 'post',
       url: 'api/logout/',
@@ -153,6 +171,7 @@ const handleDelete = async (projectId) => {
     console.error('Error deleting project:', error);
   }
 };
+
 const [formData, setFormData] = useState({
   id: '',
   name: '',
@@ -160,6 +179,13 @@ const [formData, setFormData] = useState({
   location: '',
   description: '',
 });
+const [donationFormData, setDonationFormData] = useState({
+  email: '',
+  amount: '',
+  description: '',
+  project_id: '',
+});
+
 const handleShowModal = () => {
   setShowModal(true);
 };
@@ -182,9 +208,8 @@ const handleEdit = (project) => {
 const handleSave = async (formData) => {
   try {
     if (formData.id) {
-      // Update existing project
       const { id, ...updateData } = formData;
-      const response = await axios.put(`/api/projects/${id}`, updateData, {
+      const response = await axios.patch(`/api/projects/${id}`, updateData, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -203,32 +228,56 @@ const handleSave = async (formData) => {
     fetchProjects(currentPage);
     fetchLatestProjects();
     handleCloseModal();
+    setNotification(`${formData.name} was created successfully`);
+
+    setTimeout(() => {
+      setNotification(null);
+    }, 3000);
   } catch (error) {
     console.error('Error saving project:', error);
   }
 };
+const handleSaveDonation = async (formData) => {
+  try {
+      await axios.post('/api/donations', formData, {
+          headers: {
+              'Authorization': `Bearer ${token}`
+          }
+      });
+      console.log('Donation saved');
+      handleCloseDonationModal();
+      setNotification(`Donation for "${selectedProject.name}" was created successfully`);
+
+      setTimeout(() => {
+          setNotification(null);
+      }, 3000);
+  } catch (error) {
+      console.error('Error saving donation:', error);
+  }
+};
+
+
 
   return (
     <>
-    {notification && (
+    <BrowserRouter className="App">
+      <NavBar token={token} handleLogout={handleLogout}/>
+      {notification && (
       <div className="alert alert-success" role="alert">
         {notification}
       </div>
     )}
-    
-    <BrowserRouter className="App">
-      <NavBar token={token} handleLogout={handleLogout}/>
       <Routes>
         <Route path="/" element={<Homepage types={types} latestProjects={latestProjects} userRole={userRole} token={token} handleDelete={handleDelete} handleEdit={handleEdit}
-        handleSave={handleSave} handleCloseModal={handleCloseModal} handleShowModal={handleShowModal} showModal={showModal} formData={formData} setFormData={setFormData}/>} />
+        handleSave={handleSave} handleCloseModal={handleCloseModal} handleShowModal={handleShowModal} showModal={showModal} formData={formData} setFormData={setFormData} handleOpenDonationModal={handleOpenDonationModal}/>} />
 
         <Route path="projects" 
         element={<Projects ProjectCard={ProjectCard} projects={projects} fetchProjects={fetchProjects} 
         currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalPages} userRole={userRole} token={token} handleDelete={handleDelete} 
         handleCloseModal={handleCloseModal} handleEdit={handleEdit} handleSave={handleSave} handleShowModal={handleShowModal} formData={formData} setFormData={setFormData}
-        showModal={showModal} types={types}/>}/>
+        showModal={showModal} types={types} handleOpenDonationModal={handleOpenDonationModal}/>}/>
 
-        <Route path="donations" element={<Donations userRole={userRole} projects={projects} token={token} fetchUserDetails={fetchUserDetails}/>}/>
+        <Route path="donations" element={<Donations userRole={userRole} projects={projects} token={token} fetchUserDetails={fetchUserDetails} setShowDonationModal={setShowDonationModal} showDonationModal={showDonationModal}/>}/>
 
         <Route
           path="profile" 
@@ -244,6 +293,16 @@ const handleSave = async (formData) => {
         />
 
     </Routes>
+    {showDonationModal && selectedProject && (
+          <DonationModal
+              project={selectedProject}
+              show={showDonationModal}
+              handleCloseDonationModal={handleCloseDonationModal}
+              handleSaveDonation={handleSaveDonation}
+              donationFormData={donationFormData}
+              setDonationFormData={setDonationFormData}
+              />
+            )}
     </BrowserRouter>
     </>
   );

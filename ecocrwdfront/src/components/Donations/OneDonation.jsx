@@ -2,6 +2,10 @@ import React from 'react'
 
 const OneDonation = ({donation, userRole, handleDelete, handleShowModal}) => {
 
+    const handleUpdateClick = () => {
+    handleShowModal(donation);
+  };
+
   return (
     <tr>
     <td>{donation.email}</td>
@@ -13,7 +17,7 @@ const OneDonation = ({donation, userRole, handleDelete, handleShowModal}) => {
           <div className="d-inline">
           <button
             className="btn btn-primary btn-sm mr-2"
-              onClick={() => handleShowModal(donation.id)} 
+            onClick={handleUpdateClick}
           >
             Update
           </button>
