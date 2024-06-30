@@ -37,7 +37,7 @@ class ProjectController extends Controller
 
     public function latestProjects(){
         $latestProjects = Project::orderBy('created_at', 'desc')->take(3)->get();
-        return response()->json(['3 latest projects:' => $latestProjects]);
+        return response()->json(['3 latest projects:' => new ProjectCollection($latestProjects)]);
     }
 
     /**
