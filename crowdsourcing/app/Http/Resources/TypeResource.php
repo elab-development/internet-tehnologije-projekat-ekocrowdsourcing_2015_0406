@@ -7,10 +7,11 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class TypeResource extends JsonResource
 {
-    public static $wrap = 'Project type:';
+    public static $wrap = 'Project type';
     public function toArray(Request $request): array
     {
         return [
+            'id'=>$this->resource->id,
             'name'=>$this->resource->name,
         ];
     }

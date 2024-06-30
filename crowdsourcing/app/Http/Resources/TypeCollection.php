@@ -12,7 +12,7 @@ class TypeCollection extends ResourceCollection
      *
      * @return array<int|string, mixed>
      */
-    public static $wrap = 'Types:';
+    public static $wrap = 'Types';
     public function toArray(Request $request): array
     {
         return parent::toArray($request);
