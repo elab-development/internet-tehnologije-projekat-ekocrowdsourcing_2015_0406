@@ -26,21 +26,54 @@ function App() {
   const [showModal, setShowModal] = useState(false);
   const [types, setTypes] = useState([]);
   const [showDonationModal, setShowDonationModal] = useState(false);
+  const [selectedDonation, setSelectedDonation] = useState(null);
   const [selectedProject, setSelectedProject] = useState(null);
+  
+  const [formData, setFormData] = useState({
+    id: '',
+    name: '',
+    type_id: '',
+    location: '',
+    description: '',
+  });
 
-  const handleOpenDonationModal = (project) => {
-      setSelectedProject(project);
-      setShowDonationModal(true);
+  const [donationFormData, setDonationFormData] = useState({
+    email: '',
+    amount: '',
+    description: '',
+    project_id: '',
+  });
+
+
+  const handleOpenDonationCreateModal = (project) => {
+    setSelectedProject(project);
+    setSelectedDonation(null);
+    setShowDonationModal(true);
   };
 
+
+  const handleOpenDonationEditModal = (donation) => {
+    setSelectedDonation(donation);
+    setSelectedProject(donation.project);
+    setDonationFormData({
+      email: donation.email,
+      amount: donation.amount,
+      description: donation.description,
+      project_id: donation.project.id,
+    });
+    setShowDonationModal(true);
+    };
+
+
   const handleCloseDonationModal = () => {
-      setSelectedProject(null);
-      setShowDonationModal(false);
-      setDonationFormData({
-        email: '',
-        amount: 0,
-        description: '',
-      });
+    setSelectedProject(null);
+    setSelectedDonation(null);
+    setShowDonationModal(false);
+    setDonationFormData({
+      email: '',
+      amount: 0,
+      description: '',
+    });
   };
 
   useEffect(() => {
@@ -124,7 +157,7 @@ function App() {
   };
 
 function handleLogout(){
-    let config = {
+    let config = {  //pravim config promenjivu koja sadrzi method, url i header i onda to dajem requestu
       method: 'post',
       url: 'api/logout/',
       headers: { 
@@ -171,20 +204,6 @@ const handleDelete = async (projectId) => {
     console.error('Error deleting project:', error);
   }
 };
-
-const [formData, setFormData] = useState({
-  id: '',
-  name: '',
-  type_id: '',
-  location: '',
-  description: '',
-});
-const [donationFormData, setDonationFormData] = useState({
-  email: '',
-  amount: '',
-  description: '',
-  project_id: '',
-});
 
 const handleShowModal = () => {
   setShowModal(true);
@@ -239,18 +258,28 @@ const handleSave = async (formData) => {
 };
 const handleSaveDonation = async (formData) => {
   try {
-      await axios.post('/api/donations', formData, {
-          headers: {
-              'Authorization': `Bearer ${token}`
-          }
+    if (selectedDonation) {
+      await axios.patch(`/api/donations/${selectedDonation.id}`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
       });
-      console.log('Donation saved');
-      handleCloseDonationModal();
+      console.log('Donation updated');
+      setNotification(`Donation for "${selectedDonation.project.name}" was updated successfully`);
+    } else{
+      await axios.post('/api/donations', formData, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
       setNotification(`Donation for "${selectedProject.name}" was created successfully`);
 
+    }
+      handleCloseDonationModal();
       setTimeout(() => {
           setNotification(null);
       }, 3000);
+      
   } catch (error) {
       console.error('Error saving donation:', error);
   }
@@ -260,50 +289,53 @@ const handleSaveDonation = async (formData) => {
 
   return (
     <>
-    <BrowserRouter className="App">
-      <NavBar token={token} handleLogout={handleLogout}/>
-      {notification && (
-      <div className="alert alert-success" role="alert">
-        {notification}
-      </div>
-    )}
-      <Routes>
-        <Route path="/" element={<Homepage types={types} latestProjects={latestProjects} userRole={userRole} token={token} handleDelete={handleDelete} handleEdit={handleEdit}
-        handleSave={handleSave} handleCloseModal={handleCloseModal} handleShowModal={handleShowModal} showModal={showModal} formData={formData} setFormData={setFormData} handleOpenDonationModal={handleOpenDonationModal}/>} />
+      <BrowserRouter className="App">
+        <NavBar token={token} handleLogout={handleLogout}/>
+        {notification && (
+        <div className="alert alert-success" role="alert">
+          {notification}
+        </div>
+      )}
+        <Routes>
+          <Route path="/" element={<Homepage types={types} latestProjects={latestProjects} userRole={userRole} token={token} handleDelete={handleDelete} handleEdit={handleEdit}
+          handleSave={handleSave} handleCloseModal={handleCloseModal} handleShowModal={handleShowModal} showModal={showModal} formData={formData} setFormData={setFormData}/>} />
 
-        <Route path="projects" 
-        element={<Projects ProjectCard={ProjectCard} projects={projects} fetchProjects={fetchProjects} 
-        currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalPages} userRole={userRole} token={token} handleDelete={handleDelete} 
-        handleCloseModal={handleCloseModal} handleEdit={handleEdit} handleSave={handleSave} handleShowModal={handleShowModal} formData={formData} setFormData={setFormData}
-        showModal={showModal} types={types} handleOpenDonationModal={handleOpenDonationModal}/>}/>
+          <Route path="projects" 
+          element={<Projects ProjectCard={ProjectCard} projects={projects} fetchProjects={fetchProjects} 
+          currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalPages} userRole={userRole} token={token} handleDelete={handleDelete} 
+          handleCloseModal={handleCloseModal} handleEdit={handleEdit} handleSave={handleSave} handleShowModal={handleShowModal} formData={formData} setFormData={setFormData}
+          showModal={showModal} types={types} handleOpenDonationCreateModal={handleOpenDonationCreateModal}/>}/>
 
-        <Route path="donations" element={<Donations userRole={userRole} projects={projects} token={token} fetchUserDetails={fetchUserDetails} setShowDonationModal={setShowDonationModal} showDonationModal={showDonationModal}/>}/>
+          <Route path="donations" element={<Donations userRole={userRole} projects={projects} 
+          token={token} fetchUserDetails={fetchUserDetails} setShowDonationModal={setShowDonationModal}  showDonationModal={showDonationModal}
+          handleOpenDonationEditModal={handleOpenDonationEditModal} selectedProject={selectedProject}/>}/>
 
-        <Route
-          path="profile" 
-          element={<Profile token={token}/>}
-        /> 
-        <Route
-          path="login" 
-          element={<LoginPage fetchUserDetails={fetchUserDetails} addToken={addToken}/>}
-        /> 
-        <Route
-          path="register" 
-          element={<RegisterPage/>}
-        />
+          <Route
+            path="profile" 
+            element={<Profile token={token}/>}
+          /> 
+          <Route
+            path="login" 
+            element={<LoginPage fetchUserDetails={fetchUserDetails} addToken={addToken}/>}
+          /> 
+          <Route
+            path="register" 
+            element={<RegisterPage/>}
+          />
 
-    </Routes>
-    {showDonationModal && selectedProject && (
-          <DonationModal
-              project={selectedProject}
-              show={showDonationModal}
-              handleCloseDonationModal={handleCloseDonationModal}
-              handleSaveDonation={handleSaveDonation}
-              donationFormData={donationFormData}
-              setDonationFormData={setDonationFormData}
-              />
-            )}
-    </BrowserRouter>
+      </Routes>
+      {showDonationModal && selectedProject && (
+            <DonationModal
+                selectedProject={selectedProject}
+                show={showDonationModal}
+                handleCloseDonationModal={handleCloseDonationModal}
+                handleSaveDonation={handleSaveDonation}
+                donationFormData={donationFormData}
+                setDonationFormData={setDonationFormData}
+                selectedDonation={selectedDonation}
+                />
+        )}
+      </BrowserRouter>
     </>
   );
 }

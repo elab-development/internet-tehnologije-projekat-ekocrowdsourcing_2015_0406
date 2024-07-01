@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import DonationModal from '../Reusable/DonationModal';
 
-const Donations = ({projects, userRole, token, setShowDonationModal, showDonationModal }) => {
+const Donations = ({projects, userRole, token, setShowDonationModal, showDonationModal, handleSaveDonation, handleOpenDonationEditModal, selectedProject, selectedDonation, setSelectedDonation, donationFormData, setDonationFormData }) => {
 
   const [donations, setDonations] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -12,8 +12,6 @@ const Donations = ({projects, userRole, token, setShowDonationModal, showDonatio
   const [notification, setNotification] = useState({ message: '', visible: false });
   const [selectedProjects, setSelectedProjects] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedDonation, setSelectedDonation] = useState(null);
 
   const handleSearchChange = (e) => {
     setSearchTerm(e.target.value);
@@ -97,29 +95,6 @@ const Donations = ({projects, userRole, token, setShowDonationModal, showDonatio
     setSelectedDonation(null);
   };
 
-  const handleUpdateDonation = async (donationId, updatedData) => {
-    try {
-      await axios.patch(`api/donations/${donationId.id}`, updatedData, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      setNotification({ message: 'Donation updated successfully.', visible: true });
-      setTimeout(() => {
-        setNotification({ message: '', visible: false });
-      }, 3000);
-      fetchDonations();
-      handleCloseModal();
-    } catch (error) {
-      console.error('Error updating donation:', error);
-      setNotification({ message: 'Error updating donation.', visible: true });
-      setTimeout(() => {
-        setNotification({ message: '', visible: false });
-      }, 3000);
-    }
-  };
-
-
   return (
     <div className="container mt-4">
       {notification.visible && (
@@ -155,7 +130,7 @@ const Donations = ({projects, userRole, token, setShowDonationModal, showDonatio
                   <td colSpan="4" className="text-center">No donations found</td>
                 </tr>
               ) : (
-                donations.map((donation) => <OneDonation donation={donation} userRole={userRole} key={donation.id} handleDelete={handleDelete} handleShowModal={handleShowModal} />)
+                donations.map((donation) => <OneDonation donation={donation} userRole={userRole} key={donation.id} handleDelete={handleDelete} handleShowModal={handleOpenDonationEditModal} />)
               )}
             </tbody>
           </table>
@@ -203,14 +178,13 @@ const Donations = ({projects, userRole, token, setShowDonationModal, showDonatio
       </div>
       {selectedDonation && (
         <DonationModal
-          project={selectedDonation.project} // Assuming donation has project information
-          show={showDonationModal}
-          handleSaveDonation={handleUpdateDonation}
-          handleCloseDonationModal={handleCloseModal}
-          handleUpdateDonation={handleUpdateDonation} // Assuming handleUpdateDonation method for updating donation
-          donationFormData={selectedDonation} // Pass selectedDonation as initial form data
-          setDonationFormData={setSelectedDonation} // Use setSelectedDonation to update selectedDonation
-        />
+        selectedProject={selectedDonation ? selectedDonation.project : selectedProject}
+        show={showDonationModal}
+        handleCloseDonationModal={setShowDonationModal}
+        handleSaveDonation={handleSaveDonation}
+        donationFormData={selectedDonation || donationFormData}
+        setDonationFormData={selectedDonation ? setSelectedDonation : setDonationFormData}
+      />
       )}
     </div>
   );

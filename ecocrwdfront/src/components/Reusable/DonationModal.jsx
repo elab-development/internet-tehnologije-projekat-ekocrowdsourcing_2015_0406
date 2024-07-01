@@ -1,7 +1,7 @@
 import React from 'react';
 import { Modal, Form, Button } from 'react-bootstrap';
 
-const DonationModal = ({project, show, handleCloseDonationModal, handleSaveDonation, donationFormData, setDonationFormData }) => {
+const DonationModal = ({selectedProject, show, handleCloseDonationModal, handleSaveDonation, donationFormData, setDonationFormData }) => {
 
   const handleChange = (e) => {   //popunjava DonationFormData na osnovu unesenog u polja
     const { name, value } = e.target;
@@ -15,16 +15,16 @@ const DonationModal = ({project, show, handleCloseDonationModal, handleSaveDonat
     e.preventDefault();
     const formDataWithProjectId = {
       ...donationFormData,
-      project_id: project.id,
+      project_id: selectedProject.id,
     };
     handleSaveDonation(formDataWithProjectId);
-    handleCloseDonationModal(); //zatvara modal
+    handleCloseDonationModal();
   };
     
   return (
     <Modal show={show} onHide={handleCloseDonationModal}>
       <Modal.Header closeButton>
-          <Modal.Title>Donating to "{project.name}"</Modal.Title>
+          <Modal.Title>{donationFormData.id ? 'Edit Donation' : `Donating to "${selectedProject.name}"`}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
           <Form onSubmit={handleSubmit}>
@@ -65,7 +65,7 @@ const DonationModal = ({project, show, handleCloseDonationModal, handleSaveDonat
               </Form.Group>
 
               <Button variant="primary" type="submit">
-                  Donate
+                {donationFormData.id ? 'Update' : 'Donate'}
               </Button>
           </Form>
       </Modal.Body>
