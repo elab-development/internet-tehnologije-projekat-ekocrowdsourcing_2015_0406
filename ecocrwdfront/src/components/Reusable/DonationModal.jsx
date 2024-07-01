@@ -3,7 +3,7 @@ import { Modal, Form, Button } from 'react-bootstrap';
 
 const DonationModal = ({project, show, handleCloseDonationModal, handleSaveDonation, donationFormData, setDonationFormData }) => {
 
-  const handleChange = (e) => {
+  const handleChange = (e) => {   //popunjava DonationFormData na osnovu unesenog u polja
     const { name, value } = e.target;
     setDonationFormData(prevState => ({
         ...prevState,
@@ -11,14 +11,14 @@ const DonationModal = ({project, show, handleCloseDonationModal, handleSaveDonat
     }));
 };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e) => { //dodaje project_id u donationFormData i prosledjuje ga funckiji handleSaveDonation
     e.preventDefault();
     const formDataWithProjectId = {
       ...donationFormData,
       project_id: project.id,
     };
     handleSaveDonation(formDataWithProjectId);
-    handleCloseDonationModal();
+    handleCloseDonationModal(); //zatvara modal
   };
     
   return (

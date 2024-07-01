@@ -15,7 +15,7 @@ const Homepage = ({handleOpenDonationModal, latestProjects, handleDelete, userRo
         ))}
       </div>
       <ProjectModal
-        showModal={showModal}
+        show={showModal}
         handleClose={handleCloseModal}
         handleSave={handleSave}
         formData={formData}
