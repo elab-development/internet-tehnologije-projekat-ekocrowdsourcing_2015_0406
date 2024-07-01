@@ -75,6 +75,7 @@ const Donations = ({projects, userRole, token, setShowDonationModal, showDonatio
         setNotification({ message: '', visible: false });
       }, 3000);
       fetchDonations();
+      setCurrentPage(1);
     } catch (error) {
       console.error('Error deleting donation:', error);
       // Handle error, e.g., show error message to user
@@ -83,16 +84,6 @@ const Donations = ({projects, userRole, token, setShowDonationModal, showDonatio
         setNotification({ message: '', visible: false });
       }, 3000);
     }
-  };
-
-  const handleShowModal = (donation) => {
-    setSelectedDonation(donation);
-    setShowDonationModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setShowDonationModal(false);
-    setSelectedDonation(null);
   };
 
   return (
