@@ -1,9 +1,10 @@
 import React from 'react';
 
 
-const ProjectCard = ({show, project, handleDelete, userRole, handleEdit, handleOpenDonationModal}) => {
+const ProjectCard = ({show, project, handleDelete, userRole, handleEdit, handleOpenDonationCreateModal}) => {
+
   const handleDonateClick = () => {
-    handleOpenDonationModal(project);
+    handleOpenDonationCreateModal(project);
   };
 
   return (

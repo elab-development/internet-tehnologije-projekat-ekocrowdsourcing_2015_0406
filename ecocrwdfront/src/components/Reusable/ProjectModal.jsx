@@ -72,6 +72,7 @@ const ProjectModal = ({ show, handleClose, handleSave, types, formData, setFormD
                     name="description"
                     value={formData.description}
                     onChange={handleChange}
+                    required
                 />
             </Form.Group>
 
