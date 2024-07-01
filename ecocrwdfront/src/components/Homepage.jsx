@@ -20,7 +20,7 @@ const Homepage = ({handleOpenDonationModal, latestProjects, handleDelete, userRo
         handleSave={handleSave}
         formData={formData}
         setFormData={setFormData}
-        types={[]}
+        types={types}
       />
     </div>
   )
