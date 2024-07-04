@@ -59,7 +59,7 @@ class ProjectController extends Controller
             'name' => 'required|string|max:255',
             'type_id' => 'required|exists:types,id',
             'location' => 'required|min:2',
-            'description' => 'sometimes|min:4',
+            'description' => 'sometimes|min:4|max:1024',
         ]);
 
         $validatedData['user_id'] = $user_id;
@@ -97,7 +97,7 @@ class ProjectController extends Controller
         $validatedData = $request->validate([
             'name' => 'sometimes|string|max:255',
             'type_id' => 'sometimes|exists:types,id',
-            'description'=>'sometimes',
+            'description'=>'sometimes|min:4|max:1024',
             'location' => 'sometimes|min:4'
         ]);
 
