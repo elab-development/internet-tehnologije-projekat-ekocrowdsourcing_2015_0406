@@ -12,27 +12,26 @@ const RegisterPage = () => {
         type: ""
       });
     
-      let navigate = useNavigate();
+      const navigate = useNavigate();
 
-      function handleInput(e){
-        let newUserData = userData;
+      const handleInput = async (e) =>{
+        const newUserData = userData;
         newUserData[e.target.name]=e.target.value;
         setUserData(newUserData);
         //console.log(userData);
       }
     
-      function handleRegister(e){
+      const handleRegister = async (e) =>{
         e.preventDefault();
-        axios
-        .post("api/register", userData)
-        .then((res)=>{
-          console.log(res.data);
+        try {
+          const response = await axios.post("api/register", userData);
+          console.log(response.data);
           navigate("/login");
-        })
-        .catch((e)=>{
-          console.log(e);
-        });
+        } catch (error) {
+          console.error(error);
+        }
       }
+
   return (
     <div className="container mt-5">
       <div className="row justify-content-center">
@@ -53,7 +52,7 @@ const RegisterPage = () => {
                   <label htmlFor="password">Password</label>
                   <input type="password" className="form-control" id="password" name="password" onInput={handleInput} required />
                 </div>
-                <button type="submit" className="btn btn-primary btn-block">Register</button>
+                <button type="submit" className="btn btn-color text-white btn-block mt-2">Register</button>
               </form>
             </div>
           </div>
