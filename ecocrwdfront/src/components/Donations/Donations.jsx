@@ -28,7 +28,7 @@ const Donations = ({projects, userRole, token, setShowDonationModal, showDonatio
 
   const fetchDonations = async (page, email = '', projects = []) => { //async omogucava simultano izvrsavanje vise operacija
     try {
-      let params = { page };
+      const params = { page };
 
       if (email) {
         params.email = email; //ako postoji, dodaje email u params
@@ -48,7 +48,7 @@ const Donations = ({projects, userRole, token, setShowDonationModal, showDonatio
     
   useEffect(() => {
     fetchDonations(currentPage, searchTerm, selectedProjects);
-  }, [currentPage, searchTerm, selectedProjects]);
+  }, [currentPage, searchTerm, selectedProjects, handleSaveDonation]);
 
   const handlePreviousPage = () => { 
     if (currentPage > 1) {
@@ -93,7 +93,7 @@ const Donations = ({projects, userRole, token, setShowDonationModal, showDonatio
               {notification.message}
             </div>
       )}
-      <div className="d-flex flex-row justify-content-start mb-2">
+      <div className="justify-content-start mb-2">
         <h2 className="mr-3">Donations</h2>
         <input
           type="text"
@@ -103,16 +103,16 @@ const Donations = ({projects, userRole, token, setShowDonationModal, showDonatio
           onChange={handleSearchChange}
         />
       </div>
-      
       <div className="row">
         <div className="col-md-8">
-          <table className="table table-striped">
+          <table className="table table-success table-responsive table-striped">
             <thead>
               <tr>
-                <th>Email</th>
-                <th>Description</th>
-                <th>Project name</th>
-                <th>Amount</th>
+                <th className="text-center">Email</th>
+                <th className="text-center">Description</th>
+                <th className="text-center">Project name</th>
+                <th className="text-center">Amount</th>
+                {userRole === 'admin' && (<th>Actions</th>)}
               </tr>
             </thead>
             <tbody>
@@ -121,22 +121,22 @@ const Donations = ({projects, userRole, token, setShowDonationModal, showDonatio
                   <td colSpan="4" className="text-center">No donations found</td>
                 </tr>
               ) : (
-                donations.map((donation) => <OneDonation donation={donation} userRole={userRole} key={donation.id} handleDelete={handleDelete} handleShowModal={handleOpenDonationEditModal} />)
+                donations.map((donation) => <OneDonation donation={donation} userRole={userRole} key={donation.id} handleDelete={handleDelete} handleOpenDonationEditModal={handleOpenDonationEditModal} />)
               )}
             </tbody>
           </table>
           
           <div className="d-flex justify-content-between mt-4">
             <button
-              className="btn btn-primary"
+              className="btn btn-color mb-3 text-white"
               onClick={handlePreviousPage}
               disabled={currentPage === 1}
             >
               Previous
             </button>
-            <span>Page {currentPage} of {totalPages}</span>
+            <span className='fw-bold text-white'>Page {currentPage} of {totalPages}</span>
             <button
-              className="btn btn-primary"
+              className="btn btn-color mb-3 text-white"
               onClick={handleNextPage}
               disabled={currentPage === totalPages}
             >
@@ -146,7 +146,7 @@ const Donations = ({projects, userRole, token, setShowDonationModal, showDonatio
         </div>
         
         <div className="col-md-4">
-          <div className="mb-4">
+          <div className="mb-4 text-white">
             <h5>Filter by Project</h5>
             <div className="form-check">
               {projects.map((project) => (
