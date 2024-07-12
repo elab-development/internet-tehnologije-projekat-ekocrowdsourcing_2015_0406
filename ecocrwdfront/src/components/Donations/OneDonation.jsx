@@ -1,9 +1,9 @@
 import React from 'react'
 
-const OneDonation = ({donation, userRole, handleDelete, handleShowModal}) => {
+const OneDonation = ({donation, userRole, handleDelete, handleOpenDonationEditModal}) => {
 
     const handleUpdateClick = () => {
-    handleShowModal(donation);
+      handleOpenDonationEditModal(donation);
   };
 
   return (

@@ -24,7 +24,7 @@ const DonationModal = ({selectedProject, show, handleCloseDonationModal, handleS
   return (
     <Modal show={show} onHide={handleCloseDonationModal}>
       <Modal.Header closeButton>
-          <Modal.Title>{donationFormData.id ? 'Edit Donation' : `Donating to "${selectedProject.name}"`}</Modal.Title>
+          <Modal.Title>{donationFormData.id ? `Edit Donation for "${selectedProject}"` : `Donating to "${selectedProject.name}"`}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
           <Form onSubmit={handleSubmit}>
@@ -64,7 +64,7 @@ const DonationModal = ({selectedProject, show, handleCloseDonationModal, handleS
                   />
               </Form.Group>
 
-              <Button variant="primary" type="submit">
+              <Button variant="primary" type="submit" className='mt-2'>
                 {donationFormData.id ? 'Update' : 'Donate'}
               </Button>
           </Form>
