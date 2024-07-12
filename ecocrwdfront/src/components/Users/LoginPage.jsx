@@ -9,35 +9,35 @@ const LoginPage = ({addToken, fetchUserDetails}) => {
       password:"",
     });
 
-    let navigate = useNavigate();
+    const navigate = useNavigate();
 
 
-    function handleInput(e){
-      let newUserData = userData;
+    const handleInput = (e) => {
+      const newUserData = userData;
       newUserData[e.target.name] = e.target.value; //e.target.name (ovim dobijamo name atribut html elementa) moze biti  username ili pass 
       //sto se poklapa sa atributima userData objekta
       setUserData(newUserData);
     }
 
-    function handleLogin(e){
+    const handleLogin = async (e) => {
       e.preventDefault();
-      axios.post("api/login", userData).then((res)=>{
-        console.log(res.data);
-        if(res.data.sucess == true){
-          window.sessionStorage.setItem("auth_token", res.data.access_token); //upisuje kljuc
-          fetchUserDetails(res.data.access_token);
-          addToken(res.data.access_token);
+      try {
+        const response = await axios.post("api/login", userData);
+        console.log(response.data);
+        if(response.data.sucess == true){
+          window.sessionStorage.setItem("auth_token", response.data.access_token); //upisuje kljuc
+          fetchUserDetails(response.data.access_token);
+          addToken(response.data.access_token);
           navigate("/");
         }
-      })
-      .catch((e)=>{
-        console.log(e);
-      });
+      } catch (error) {
+        console.error(error);
+      }
     }
   return (
      <div className="container mt-5">
       <div className="row justify-content-center">
-        <div className="col-md-2">
+        <div className="col-md-4">
           <div className="card">
             <div className="card-body">
               <h3 className="card-title text-center">Login</h3>
@@ -60,10 +60,10 @@ const LoginPage = ({addToken, fetchUserDetails}) => {
                   name="password"
                   onInput={handleInput}/>
                 </div>
-                <button type="submit" className="btn btn-primary btn-block">Login</button>
-                <div className="text-center mt-3">
+                <button type="submit" className="btn btn-color text-white btn-block mt-2">Login</button>
+{/*                 <div className="text-center mt-3">
                   <a href="#" className="text-muted">Forgot password?</a>
-                </div>
+                </div> */}
                 <div className="text-center mt-3">
                   <a href="/register" className="text-muted">Register?</a>
                 </div>
