@@ -1,22 +1,24 @@
 import './App.css';
-import NavBar from './components/Reusable/NavBar';
-import Projects from './components/Projects/Projects';
-import ProjectCard from './components/Reusable/ProjectCard';
-import Donations from './components/Donations/Donations';
-import LoginPage from './components/Users/LoginPage';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap/dist/js/bootstrap.bundle.min";
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import NavBar from './components/Reusable/NavBar';
+import Projects from './components/Projects/Projects';
+import Donations from './components/Donations/Donations';
+import LoginPage from './components/Users/LoginPage';
 import RegisterPage from './components/Users/RegisterPage'; 
 import Homepage from './components/Homepage';
 import Profile from './components/Users/Profile';
 import DonationModal from './components/Reusable/DonationModal';
+import UpdateUser from './components/Users/UpdateUser';
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min";
+import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
+import UsersTable from './components/Users/UsersTable';
+
 
 function App() {
 
-  const [token, setToken] = useState(sessionStorage.getItem('auth_token'));
+  const [token, setToken] = useState(sessionStorage.getItem('auth_token')); 
   const [userRole, setUserRole] = useState('');
   const [projects, setProjects] = useState([]);
   const [latestProjects, setLatestProjects] = useState([]);
@@ -38,12 +40,12 @@ function App() {
   });
 
   const [donationFormData, setDonationFormData] = useState({
+    id: '',
     email: '',
     amount: '',
     description: '',
     project_id: '',
   });
-
 
   const handleOpenDonationCreateModal = (project) => {
     setSelectedProject(project);
@@ -56,11 +58,13 @@ function App() {
     setSelectedDonation(donation);
     setSelectedProject(donation.project);
     setDonationFormData({
+      id:donation.id,
       email: donation.email,
       amount: donation.amount,
       description: donation.description,
       project_id: donation.project.id,
     });
+    console.log(donation.project);
     setShowDonationModal(true);
     };
 
@@ -78,8 +82,8 @@ function App() {
 
   useEffect(() => {
     fetchTypes();
-    fetchProjects(currentPage).then(() => {
-      fetchLatestProjects();
+    fetchProjects(currentPage).then(() => {  //treba da povuce prvo projekte da bih uzeo poslednja tri
+      fetchLatestProjects();                //ovo treba ispraviti jer sada poslednja tri uzima sa posebne putanje /api/latest-projects
     });
     fetchUserDetails(token);
   }, [currentPage]);
@@ -117,10 +121,8 @@ function App() {
       console.log("meta last page: ", response.data.meta.last_page);
       setTotalPages(response.data.meta.last_page);
       console.log("Total pages: ", totalPages);
-      return Promise.resolve(); 
     } catch (error) {
       console.error('Error fetching projects:', error);
-      return Promise.reject(error); 
     }
   };
   
@@ -133,22 +135,22 @@ function App() {
     }
   };
 
-  const fetchUserDetails = (token) => {
+  const fetchUserDetails = async (token) => {
     if(token===null){
       return;
     }
-    axios.get('api/profile', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-    .then((response) => {
+    try{
+      const response = await axios.get('api/profile', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       setUserRole(response.data.User.type);
       console.log(response.data.User.type);
-    })
-    .catch((error) => {
+
+    } catch(error){
       console.error(error);
-    });
+    }
   }
 
   const addToken = (auth_token) => {
@@ -156,27 +158,28 @@ function App() {
     fetchUserDetails(auth_token);
   };
 
-function handleLogout(){
-    let config = {  //pravim config promenjivu koja sadrzi method, url i header i onda to dajem requestu
+  const navigate = useNavigate();
+  
+  const  handleLogout = async () => {
+    const config = { 
       method: 'post',
       url: 'api/logout/',
       headers: { 
         'Authorization': "Bearer "+window.sessionStorage.getItem("auth_token")
       }
     };
-
-    axios.request(config)
-    .then((response) => {
-      console.log(JSON.stringify(response.data));
-      window.sessionStorage.removeItem("auth_token", null);
+    try {
+      await axios.request(config);
+      window.sessionStorage.removeItem("auth_token");
       setToken(null);
       setUserRole(null);
-    })
-    .catch((error) => {
+      navigate("/");
+    } catch (error) {
       console.log(error);
-    });
-    fetchProjects();
-    fetchLatestProjects();
+    } finally {
+      fetchProjects();
+      fetchLatestProjects();
+    }
 }
 
 const handleDelete = async (projectId) => {
@@ -227,7 +230,7 @@ const handleEdit = (project) => {
 const handleSave = async (formData) => {
   try {
     if (formData.id) {
-      const { id, ...updateData } = formData;
+      const { id, ...updateData } = formData; //nova const koja se pravi tako sto se uzima id iz formData. ... uzima ostatak formData od cega pravi updateData
       const response = await axios.patch(`/api/projects/${id}`, updateData, {
         headers: {
           'Authorization': `Bearer ${token}`
@@ -265,7 +268,7 @@ const handleSaveDonation = async (formData) => {
         }
       });
       console.log('Donation updated');
-      setNotification(`Donation for "${selectedDonation.project.name}" was updated successfully`);
+      setNotification(`Donation for "${selectedDonation.project}" was updated successfully`);
     } else{
       await axios.post('/api/donations', formData, {
         headers: {
@@ -273,7 +276,7 @@ const handleSaveDonation = async (formData) => {
         }
       });
       setNotification(`Donation for "${selectedProject.name}" was created successfully`);
-
+      
     }
       handleCloseDonationModal();
       setTimeout(() => {
@@ -288,9 +291,8 @@ const handleSaveDonation = async (formData) => {
 
 
   return (
-    <>
-      <BrowserRouter className="App">
-        <NavBar token={token} handleLogout={handleLogout}/>
+    <> {/* useNavigate iz handleLogout je pravio problem. Kada imam BrowserRouter ovde ne radi, kada stavim u index.js a obrisem ovde - radi  */}
+        <NavBar token={token} handleLogout={handleLogout} userRole={userRole}/>
         {notification && (
         <div className="alert alert-success" role="alert">
           {notification}
@@ -298,10 +300,11 @@ const handleSaveDonation = async (formData) => {
       )}
         <Routes>
           <Route path="/" element={<Homepage types={types} latestProjects={latestProjects} userRole={userRole} token={token} handleDelete={handleDelete} handleEdit={handleEdit}
-          handleSave={handleSave} handleCloseModal={handleCloseModal} handleShowModal={handleShowModal} showModal={showModal} formData={formData} setFormData={setFormData}/>} />
+          handleSave={handleSave} handleCloseModal={handleCloseModal} handleShowModal={handleShowModal} showModal={showModal} formData={formData} setFormData={setFormData}
+          handleOpenDonationCreateModal={handleOpenDonationCreateModal}/>} />
 
           <Route path="projects" 
-          element={<Projects ProjectCard={ProjectCard} projects={projects} fetchProjects={fetchProjects} 
+          element={<Projects projects={projects} fetchProjects={fetchProjects} 
           currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalPages} userRole={userRole} token={token} handleDelete={handleDelete} 
           handleCloseModal={handleCloseModal} handleEdit={handleEdit} handleSave={handleSave} handleShowModal={handleShowModal} formData={formData} setFormData={setFormData}
           showModal={showModal} types={types} handleOpenDonationCreateModal={handleOpenDonationCreateModal}/>}/>
@@ -322,9 +325,17 @@ const handleSaveDonation = async (formData) => {
             path="register" 
             element={<RegisterPage/>}
           />
+          <Route
+            path="update-user" 
+            element={<UpdateUser token={token}/>}
+          />
+          <Route
+            path="users" 
+            element={<UsersTable token={token}/>}
+          />
 
       </Routes>
-      {showDonationModal && selectedProject && (
+      {showDonationModal && selectedProject  && (
             <DonationModal
                 selectedProject={selectedProject}
                 show={showDonationModal}
@@ -335,7 +346,6 @@ const handleSaveDonation = async (formData) => {
                 selectedDonation={selectedDonation}
                 />
         )}
-      </BrowserRouter>
     </>
   );
 }
