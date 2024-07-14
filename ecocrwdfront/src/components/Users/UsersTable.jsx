@@ -52,7 +52,8 @@ const UsersTable = ({token}) => {
 
   return (
     <div className="container mt-4">
-        <div className="row">
+        <h2 className="mr-3 text-center">List of all users:</h2>
+        <div className="row justify-content-center">
         <div className="col-md-8">
           <table className="table table-success table-responsive table-striped">
             <thead>

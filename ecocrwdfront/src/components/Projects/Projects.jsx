@@ -42,7 +42,7 @@ const Projects = ({types, handleEdit, handleSave, handleCloseModal, handleShowMo
     <div className="container mt-3">
       <h2>Projects on our platform:</h2>
       {token === null? "Log in to create a project!" : 
-      <button type="button" className="btn btn-color text-white ms-3" onClick={handleShowModal}>
+      <button type="button" className="btn btn-color text-white ms-3 mb-3 mt-2" onClick={handleShowModal}>
       <IoMdAddCircle /> Add new project</button>}
 
         <ProjectModal show={showModal} handleClose={handleCloseModal} handleSave={handleSave} token={token} types={types} formData={formData} setFormData={setFormData}/>
@@ -66,6 +66,7 @@ const Projects = ({types, handleEdit, handleSave, handleCloseModal, handleShowMo
             &lt;
           </button> 
         </div>
+        
         <div className="col-1 text-end">
           <button 
             className="btn btn-color mb-3 text-white" 
