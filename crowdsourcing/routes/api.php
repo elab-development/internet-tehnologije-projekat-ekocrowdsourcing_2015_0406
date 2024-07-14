@@ -17,6 +17,7 @@ Route::group(['middleware' => ['auth:sanctum', 'admin']], function () {
         Route::resource('users', UserController::class); 
         Route::resource('donations', DonationController::class);
         Route::delete('types/{type}', [TypeController::class, 'destroy']);
+        Route::resource('types/', TypeController::class);
         Route::get('/admin-dashboard', function () { 
         return 'Welcome to the admin dashboard!';
     });
