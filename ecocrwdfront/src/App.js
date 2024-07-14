@@ -14,6 +14,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import UsersTable from './components/Users/UsersTable';
+import Types from './components/Types';
 
 
 function App() {
@@ -82,11 +83,16 @@ function App() {
 
   useEffect(() => {
     fetchTypes();
-    fetchProjects(currentPage).then(() => {  //treba da povuce prvo projekte da bih uzeo poslednja tri
-      fetchLatestProjects();                //ovo treba ispraviti jer sada poslednja tri uzima sa posebne putanje /api/latest-projects
-    });
+  }, [showModal]);
+
+  useEffect(() => {
+    fetchLatestProjects();
+  }, []);
+
+  useEffect(() => {
+    fetchProjects(currentPage);
     fetchUserDetails(token);
-  }, [currentPage]);
+  }, [currentPage, token]);
 
   const fetchTypes = async () => {
     if(token===null){
@@ -268,7 +274,7 @@ const handleSaveDonation = async (formData) => {
         }
       });
       console.log('Donation updated');
-      setNotification(`Donation for "${selectedDonation.project}" was updated successfully`);
+      setNotification(`Donation for "${selectedDonation.project}" was updated successfully. Page will refresh shortly to update.`);
     } else{
       await axios.post('/api/donations', formData, {
         headers: {
@@ -281,7 +287,9 @@ const handleSaveDonation = async (formData) => {
       handleCloseDonationModal();
       setTimeout(() => {
           setNotification(null);
+          window.location.reload();
       }, 3000);
+
       
   } catch (error) {
       console.error('Error saving donation:', error);
@@ -332,6 +340,10 @@ const handleSaveDonation = async (formData) => {
           <Route
             path="users" 
             element={<UsersTable token={token}/>}
+          />
+          <Route
+            path="types" 
+            element={<Types token={token} types={types} fetchTypes={fetchTypes}/>}
           />
 
       </Routes>
