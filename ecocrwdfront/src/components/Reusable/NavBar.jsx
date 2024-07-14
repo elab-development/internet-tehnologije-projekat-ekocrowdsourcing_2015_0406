@@ -28,7 +28,10 @@ const NavBar = ({token, handleLogout, userRole}) => {
               )
             }
             {userRole === 'admin' && (
-              <Link className="nav-link" to="/users"><CgProfile /> Users list</Link>
+              <>
+                <Link className="nav-link" to="/users"><CgProfile /> Users list</Link>
+                <Link className="nav-link" to="/types"><CgProfile /> Types list</Link>
+              </>
               )}
             {token != null && (
               <ul className="navbar-nav"> {/*ml-auto bio ovde */}
