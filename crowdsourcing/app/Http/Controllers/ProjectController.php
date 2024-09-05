@@ -59,7 +59,7 @@ class ProjectController extends Controller
             'name' => 'required|string|max:255',
             'type_id' => 'required|exists:types,id',
             'location' => 'required|min:2',
-            'description' => 'sometimes|min:4|max:1024',
+            'description' => 'required|min:1|max:1024',
         ]);
 
         $validatedData['user_id'] = $user_id;
