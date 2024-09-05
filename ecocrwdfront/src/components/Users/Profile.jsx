@@ -40,9 +40,11 @@ const Profile = ({token}) => {
           <p className="card-text"><strong>Name:</strong> {userData.name} </p>
           <p className="card-text"><strong>Email:</strong> {userData.email}</p>
           <p className="card-text"><strong>Role:</strong> {userData.type}</p>
-          <Link to="/update-user" className="btn btn-color text-white ms-3 me-3 mb-2">
-                <FaUserEdit /> Update
-          </Link>
+            <div className="d-flex justify-content-center">
+            <Link to="/update-user" className="btn btn-color text-white ms-3 me-3 mb-2">
+                  <FaUserEdit /> Update
+            </Link>
+          </div>
         </div>
       </div>
     </div>

@@ -71,12 +71,12 @@ const UsersTable = ({token}) => {
                 </tr>
                 ) : (
                 users.map((user) => <tr key={user.id}>
-                        <td>{user.name}</td>
-                        <td>{user.email}</td>
-                        <td>{user.type}</td>
+                        <td className="text-center">{user.name}</td>
+                        <td className='text-center'>{user.email}</td>
+                        <td className="text-center">{user.type}</td>
                         <td>
-                            <div>
-                            <button onClick={() => handleUpdateClick(user)} className="btn btn-color btn-sm text-white">
+                            <div className='d-flex justify-content-center'>
+                            <button onClick={() => handleUpdateClick(user)} className="btn btn-color btn-sm text-white me-2">
                                 <FaUserEdit /> Update
                             </button>
                                 <button
