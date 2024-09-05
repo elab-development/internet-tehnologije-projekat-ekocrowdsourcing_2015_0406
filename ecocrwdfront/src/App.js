@@ -30,6 +30,7 @@ function App() {
   const [showDonationModal, setShowDonationModal] = useState(false);
   const [selectedDonation, setSelectedDonation] = useState(null);
   const [selectedProject, setSelectedProject] = useState(null);
+  const navigate = useNavigate();
   
   const [formData, setFormData] = useState({
     id: '',
@@ -148,29 +149,6 @@ function App() {
     fetchUserDetails(auth_token);
   };
 
-  const navigate = useNavigate();
-  
-  const  handleLogout = async () => {
-    const config = { 
-      method: 'post',
-      url: 'api/logout/',
-      headers: { 
-        'Authorization': "Bearer "+window.sessionStorage.getItem("auth_token")
-      }
-    };
-    try {
-      await axios.request(config);
-      window.sessionStorage.removeItem("auth_token");
-      setToken(null);
-      setUserRole(null);
-      navigate("/");
-    } catch (error) {
-      console.log(error);
-    } finally {
-      fetchProjects();
-    }
-  }
-
   const handleDelete = async (projectId) => {
   try {
     console.log("Token: ", token);
@@ -277,7 +255,7 @@ function App() {
 
   return (
     <> {/* useNavigate iz handleLogout je pravio problem. Kada imam BrowserRouter ovde ne radi, kada stavim u index.js a obrisem ovde - radi  */}
-        <NavBar token={token} handleLogout={handleLogout} userRole={userRole}/>
+        <NavBar token={token} fetchProjects={fetchProjects} userRole={userRole} setToken={setToken} setUserRole={setUserRole} navigate={navigate}/>
         {notification && (
         <div className="alert alert-success" role="alert">
           {notification}
@@ -295,7 +273,7 @@ function App() {
           showModal={showModal} types={types} handleOpenDonationCreateModal={handleOpenDonationCreateModal}/>}/>
 
           <Route path="donations" element={<Donations userRole={userRole} projects={projects} setProjects={setProjects}
-          token={token} fetchUserDetails={fetchUserDetails} setShowDonationModal={setShowDonationModal}  showDonationModal={showDonationModal}
+          token={token} setShowDonationModal={setShowDonationModal}  showDonationModal={showDonationModal}
           handleOpenDonationEditModal={handleOpenDonationEditModal} selectedProject={selectedProject}/>}/>
 
           <Route
