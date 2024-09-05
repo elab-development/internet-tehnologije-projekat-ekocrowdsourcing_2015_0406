@@ -4,8 +4,30 @@ import { Outlet } from 'react-router-dom';
 import { CgProfile, CgLogOut, CgHome  } from "react-icons/cg";
 import { FaRegListAlt } from "react-icons/fa";
 import logo from '../../pics/logo.png'
+import axios from 'axios';
 
-const NavBar = ({token, handleLogout, userRole}) => {
+const NavBar = ({token, setToken, setUserRole, navigate, fetchProjects, userRole}) => {
+
+  const  handleLogout = async () => {
+    const config = { 
+      method: 'post',
+      url: 'api/logout/',
+      headers: { 
+        'Authorization': "Bearer "+window.sessionStorage.getItem("auth_token")
+      }
+    };
+    try {
+      await axios.request(config);
+      window.sessionStorage.removeItem("auth_token");
+      setToken(null);
+      setUserRole(null);
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+    } finally {
+      fetchProjects();
+    }
+  }
 
   return (
     <div> 
