@@ -4,7 +4,7 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import DonationModal from '../Reusable/DonationModal';
 
-const Donations = ({projects, userRole, token, setShowDonationModal, showDonationModal, handleSaveDonation, handleOpenDonationEditModal, selectedProject, selectedDonation, setSelectedDonation, donationFormData, setDonationFormData }) => {
+const Donations = ({projects, setProjects, userRole, token, setShowDonationModal, showDonationModal, handleSaveDonation, handleOpenDonationEditModal, selectedProject, selectedDonation, setSelectedDonation, donationFormData, setDonationFormData }) => {
 
   const [donations, setDonations] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -85,6 +85,34 @@ const Donations = ({projects, userRole, token, setShowDonationModal, showDonatio
       }, 3000);
     }
   };
+
+  const fetchAllProjects = async() =>{
+    let allProjects = [];
+    let page = 1;
+
+    try{
+      while(true){
+        const response = await axios.get(`/api/projects?page=${page}`);
+        const fetchedProjects = response.data.Projects;
+        const lastPage = response.data.meta.last_page;
+
+        allProjects = [...allProjects, ...fetchedProjects];
+        if (page >= lastPage) {
+          break; // Stop when fetched all pages
+        }
+
+        page++;
+      }
+      setProjects(allProjects);
+      console.log("All Projects: ", allProjects);
+
+    }catch(error){
+      console.error('Error fetching all projects:', error);
+    }
+  }
+  useEffect(() => {
+    fetchAllProjects();
+  }, []);
 
   return (
     <div className="container mt-4">
