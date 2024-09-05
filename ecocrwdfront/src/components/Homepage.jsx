@@ -1,12 +1,26 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ProjectCard from './Reusable/ProjectCard';
 import ProjectModal from './Reusable/ProjectModal';
 import ProjectPopup from './Reusable/ProjectPopup';
 import axios from 'axios';
 
-const Homepage = ({handleOpenDonationCreateModal, latestProjects, handleDelete, userRole, handleEdit, handleSave, handleCloseModal, showModal, formData, setFormData, types}) => {
+const Homepage = ({handleOpenDonationCreateModal, handleDelete, userRole, handleEdit, handleSave, handleCloseModal, showModal, formData, setFormData, types}) => {
   const [showPopup, setShowPopup] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
+  const [latestProjects, setLatestProjects] = useState([]);
+
+  const fetchLatestProjects = async () => {
+    try {
+      const response = await axios.get(`/api/latest-projects`);
+      setLatestProjects(response.data['3 latest projects:']);
+    } catch (error) {
+      console.error('Error fetching latest projects:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchLatestProjects();
+  }, []);
 
   const handleCardClick = async (projectId) => {
     try {

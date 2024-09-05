@@ -22,7 +22,6 @@ function App() {
   const [token, setToken] = useState(sessionStorage.getItem('auth_token')); 
   const [userRole, setUserRole] = useState('');
   const [projects, setProjects] = useState([]);
-  const [latestProjects, setLatestProjects] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [notification, setNotification] = useState(null);
@@ -54,7 +53,6 @@ function App() {
     setShowDonationModal(true);
   };
 
-
   const handleOpenDonationEditModal = (donation) => {
     setSelectedDonation(donation);
     setSelectedProject(donation.project);
@@ -67,8 +65,7 @@ function App() {
     });
     console.log(donation.project);
     setShowDonationModal(true);
-    };
-
+  };
 
   const handleCloseDonationModal = () => {
     setSelectedProject(null);
@@ -84,10 +81,6 @@ function App() {
   useEffect(() => {
     fetchTypes();
   }, [showModal]);
-
-  useEffect(() => {
-    fetchLatestProjects();
-  }, []);
 
   useEffect(() => {
     fetchProjects(currentPage);
@@ -129,15 +122,6 @@ function App() {
       console.log("Total pages: ", totalPages);
     } catch (error) {
       console.error('Error fetching projects:', error);
-    }
-  };
-  
-  const fetchLatestProjects = async () => {
-    try {
-      const response = await axios.get(`/api/latest-projects`);
-      setLatestProjects(response.data['3 latest projects:']);
-    } catch (error) {
-      console.error('Error fetching latest projects:', error);
     }
   };
 
@@ -184,11 +168,10 @@ function App() {
       console.log(error);
     } finally {
       fetchProjects();
-      fetchLatestProjects();
     }
-}
+  }
 
-const handleDelete = async (projectId) => {
+  const handleDelete = async (projectId) => {
   try {
     console.log("Token: ", token);
     await axios.delete(`api/delete-project/${projectId}`, {
@@ -206,19 +189,16 @@ const handleDelete = async (projectId) => {
     const response = await axios.get(`/api/projects?page=${currentPage}`);
     setProjects(response.data.Projects);
 
-    const latestResponse = await axios.get(`/api/projects?page=${totalPages}`);
-    setLatestProjects(latestResponse.data.Projects.slice(-3));
-
   } catch (error) {
     console.error('Error deleting project:', error);
   }
-};
+  };
 
-const handleShowModal = () => {
+  const handleShowModal = () => {
   setShowModal(true);
-};
+  };
 
-const handleCloseModal = () => {
+  const handleCloseModal = () => {
   setShowModal(false);
   setFormData({
     id: '',
@@ -227,13 +207,13 @@ const handleCloseModal = () => {
     location: '',
     description: '',
   });
-};
-const handleEdit = (project) => {
-  setFormData(project);
-  handleShowModal();
-};
+  };
+  const handleEdit = (project) => {
+    setFormData(project);
+    handleShowModal();
+  };
 
-const handleSave = async (formData) => {
+  const handleSave = async (formData) => {
   try {
     if (formData.id) {
       const { id, ...updateData } = formData; //nova const koja se pravi tako sto se uzima id iz formData. ... uzima ostatak formData od cega pravi updateData
@@ -254,7 +234,6 @@ const handleSave = async (formData) => {
       console.log('Project saved:', response.data);
     }
     fetchProjects(currentPage);
-    fetchLatestProjects();
     handleCloseModal();
     setNotification(`${formData.name} was created successfully`);
 
@@ -264,8 +243,8 @@ const handleSave = async (formData) => {
   } catch (error) {
     console.error('Error saving project:', error);
   }
-};
-const handleSaveDonation = async (formData) => {
+  };
+  const handleSaveDonation = async (formData) => {
   try {
     if (selectedDonation) {
       await axios.patch(`/api/donations/${selectedDonation.id}`, formData, {
@@ -294,9 +273,7 @@ const handleSaveDonation = async (formData) => {
   } catch (error) {
       console.error('Error saving donation:', error);
   }
-};
-
-
+  };
 
   return (
     <> {/* useNavigate iz handleLogout je pravio problem. Kada imam BrowserRouter ovde ne radi, kada stavim u index.js a obrisem ovde - radi  */}
@@ -307,7 +284,7 @@ const handleSaveDonation = async (formData) => {
         </div>
       )}
         <Routes>
-          <Route path="/" element={<Homepage types={types} latestProjects={latestProjects} userRole={userRole} token={token} handleDelete={handleDelete} handleEdit={handleEdit}
+          <Route path="/" element={<Homepage types={types} userRole={userRole} token={token} handleDelete={handleDelete} handleEdit={handleEdit}
           handleSave={handleSave} handleCloseModal={handleCloseModal} handleShowModal={handleShowModal} showModal={showModal} formData={formData} setFormData={setFormData}
           handleOpenDonationCreateModal={handleOpenDonationCreateModal}/>} />
 
@@ -317,7 +294,7 @@ const handleSaveDonation = async (formData) => {
           handleCloseModal={handleCloseModal} handleEdit={handleEdit} handleSave={handleSave} handleShowModal={handleShowModal} formData={formData} setFormData={setFormData}
           showModal={showModal} types={types} handleOpenDonationCreateModal={handleOpenDonationCreateModal}/>}/>
 
-          <Route path="donations" element={<Donations userRole={userRole} projects={projects} 
+          <Route path="donations" element={<Donations userRole={userRole} projects={projects} setProjects={setProjects}
           token={token} fetchUserDetails={fetchUserDetails} setShowDonationModal={setShowDonationModal}  showDonationModal={showDonationModal}
           handleOpenDonationEditModal={handleOpenDonationEditModal} selectedProject={selectedProject}/>}/>
 
@@ -343,7 +320,7 @@ const handleSaveDonation = async (formData) => {
           />
           <Route
             path="types" 
-            element={<Types token={token} types={types} fetchTypes={fetchTypes}/>}
+            element={<Types token={token} types={types} fetchTypes={fetchTypes} userRole={userRole}/>}
           />
 
       </Routes>
