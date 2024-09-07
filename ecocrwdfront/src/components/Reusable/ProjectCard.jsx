@@ -24,7 +24,7 @@ const ProjectCard = ({ project, handleDelete, userRole, handleEdit, handleOpenDo
               <button className="btn btn-color text-white" onClick={handleDonateClick}><FaDonate /> Donate</button>
               {userRole === 'admin' ? (
                 <div>
-                  <button className="btn btn-warning ms-3" onClick={(e) => { e.stopPropagation(); handleEdit(project); }}><FaEdit /> Edit</button>
+                  <button className="btn btn-warning ms-3 mb-1" onClick={(e) => { e.stopPropagation(); handleEdit(project); }}><FaEdit /> Edit</button>
                   <button className="btn btn-danger ms-3" onClick={(e) => { e.stopPropagation(); handleDelete(project.id); }}><MdDelete /> Delete</button>
                 </div>
               ) : null}

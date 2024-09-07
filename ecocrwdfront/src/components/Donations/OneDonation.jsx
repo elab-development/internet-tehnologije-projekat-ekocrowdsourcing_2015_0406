@@ -16,7 +16,7 @@ const OneDonation = ({donation, userRole, handleDelete, handleOpenDonationEditMo
         <td>
           <div className="d-inline">
           <button
-            className="btn btn-primary btn-sm mr-2"
+            className="btn btn-primary btn-sm mr-2 mb-1"
             onClick={handleUpdateClick}
           >
             Update
