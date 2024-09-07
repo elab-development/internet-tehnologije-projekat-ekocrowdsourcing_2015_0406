@@ -4,8 +4,8 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import DonationModal from '../Reusable/DonationModal';
 
-const Donations = ({projects, setProjects, userRole, token, setShowDonationModal, showDonationModal, handleSaveDonation, handleOpenDonationEditModal, selectedProject, selectedDonation, setSelectedDonation, donationFormData, setDonationFormData }) => {
-
+const Donations = ({userRole, token, setShowDonationModal, showDonationModal, handleSaveDonation, handleOpenDonationEditModal, selectedProject, selectedDonation, setSelectedDonation, donationFormData, setDonationFormData }) => {
+  const [projects, setProjects] = useState([]);
   const [donations, setDonations] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);

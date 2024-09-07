@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 import axios from 'axios';
 import ProjectCard from '../Reusable/ProjectCard';
@@ -6,7 +6,7 @@ import ProjectModal from '../Reusable/ProjectModal';
 import ProjectPopup from '../Reusable/ProjectPopup';
 import { IoMdAddCircle } from "react-icons/io";
 
-const Projects = ({types, handleEdit, handleSave, handleCloseModal, handleShowModal,showModal,formData,setFormData, userRole, token, projects, currentPage, setCurrentPage, totalPages, handleDelete, handleOpenDonationCreateModal}) => {
+const Projects = ({projects, fetchProjects, types, handleEdit, handleSave, handleCloseModal, handleShowModal,showModal,formData,setFormData, userRole, token, currentPage, setCurrentPage, totalPages, handleDelete, handleOpenDonationCreateModal}) => {
   const [showPopup, setShowPopup] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
 
@@ -20,6 +20,10 @@ const Projects = ({types, handleEdit, handleSave, handleCloseModal, handleShowMo
       console.error('Error fetching project data:', error);
     }
   };
+
+  useEffect(()=>{
+    fetchProjects(currentPage);
+  },[currentPage]);
 
   const handleClosePopup = () => {
     setShowPopup(false);
@@ -48,7 +52,7 @@ const Projects = ({types, handleEdit, handleSave, handleCloseModal, handleShowMo
         <ProjectModal show={showModal} handleClose={handleCloseModal} handleSave={handleSave} token={token} types={types} formData={formData} setFormData={setFormData}/>
       <div className="row">
 
-        {projects === null ? "No projects" : projects.map((proj)=>(
+        {(!projects  || projects.length === 0) ? "No projects" : projects.map((proj)=>(
             <div className="col-md-4 mb-4" key={proj.id}>
             <ProjectCard project={proj} handleDelete={handleDelete} userRole={userRole} handleEdit={handleEdit} handleOpenDonationCreateModal={handleOpenDonationCreateModal} 
             handleCardClick={handleCardClick}/>

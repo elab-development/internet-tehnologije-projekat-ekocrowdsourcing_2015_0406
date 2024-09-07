@@ -15,15 +15,15 @@ import "bootstrap/dist/js/bootstrap.bundle.min";
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import UsersTable from './components/Users/UsersTable';
 import Types from './components/Types';
+import useFetchProjects from './useFetchProject';
 
 
 function App() {
 
   const [token, setToken] = useState(sessionStorage.getItem('auth_token')); 
   const [userRole, setUserRole] = useState('');
-  const [projects, setProjects] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  //const [projects, setProjects] = useState([]);
+  const {projects, setProjects, currentPage, setCurrentPage, totalPages, fetchProjects} = useFetchProjects();
   const [notification, setNotification] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [types, setTypes] = useState([]);
@@ -81,12 +81,12 @@ function App() {
 
   useEffect(() => {
     fetchTypes();
+    fetchProjects();
   }, [showModal]);
 
   useEffect(() => {
-    fetchProjects(currentPage);
     fetchUserDetails(token);
-  }, [currentPage, token]);
+  }, [token]);
 
   const fetchTypes = async () => {
     if(token===null){
@@ -113,7 +113,7 @@ function App() {
     }
   };
   
-  const fetchProjects = async (page) => {
+/*   const fetchProjects = async (page) => {
     try {
       const response = await axios.get(`/api/projects?page=${page}`);
       setProjects(response.data.Projects);
@@ -124,7 +124,7 @@ function App() {
     } catch (error) {
       console.error('Error fetching projects:', error);
     }
-  };
+  }; */
 
   const fetchUserDetails = async (token) => {
     if(token===null){
@@ -167,9 +167,9 @@ function App() {
     const response = await axios.get(`/api/projects?page=${currentPage}`);
     setProjects(response.data.Projects);
 
-  } catch (error) {
-    console.error('Error deleting project:', error);
-  }
+    } catch (error) {
+      console.error('Error deleting project:', error);
+    }
   };
 
   const handleShowModal = () => {
@@ -267,12 +267,12 @@ function App() {
           handleOpenDonationCreateModal={handleOpenDonationCreateModal}/>} />
 
           <Route path="projects" 
-          element={<Projects projects={projects} fetchProjects={fetchProjects} 
+          element={<Projects projects={projects} fetchProjects={fetchProjects}
           currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalPages} userRole={userRole} token={token} handleDelete={handleDelete} 
           handleCloseModal={handleCloseModal} handleEdit={handleEdit} handleSave={handleSave} handleShowModal={handleShowModal} formData={formData} setFormData={setFormData}
           showModal={showModal} types={types} handleOpenDonationCreateModal={handleOpenDonationCreateModal}/>}/>
 
-          <Route path="donations" element={<Donations userRole={userRole} projects={projects} setProjects={setProjects}
+          <Route path="donations" element={<Donations userRole={userRole}
           token={token} setShowDonationModal={setShowDonationModal}  showDonationModal={showDonationModal}
           handleOpenDonationEditModal={handleOpenDonationEditModal} selectedProject={selectedProject}/>}/>
 
